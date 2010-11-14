@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook
+END
+HtmlToDocbookContentHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook/HtmlToDocbookContentHandler.java
+END
+FormattingXMLStreamWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook/FormattingXMLStreamWriter.java
+END
+DocbookGenerator.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook/DocbookGenerator.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook/package.html
+END
+IgnoreDtdEntityResolver.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/!svn/ver/77/trunk/info.bliki.wiki/bliki-addons/src/main/java/info/bliki/wiki/addon/docbook/IgnoreDtdEntityResolver.java
+END

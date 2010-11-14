@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/990/trunk/info.bliki.wiki/.settings
+END
+org.eclipse.jdt.core.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/990/trunk/info.bliki.wiki/.settings/org.eclipse.jdt.core.prefs
+END
+org.eclipse.jdt.ui.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/8/trunk/info.bliki.wiki/.settings/org.eclipse.jdt.ui.prefs
+END
+org.eclipse.wst.sse.core.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/8/trunk/info.bliki.wiki/.settings/org.eclipse.wst.sse.core.prefs
+END
+org.eclipse.core.resources.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/460/trunk/info.bliki.wiki/.settings/org.eclipse.core.resources.prefs
+END
+org.eclipse.ltk.core.refactoring.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/8/trunk/info.bliki.wiki/.settings/org.eclipse.ltk.core.refactoring.prefs
+END
+org.maven.ide.eclipse.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/501/trunk/info.bliki.wiki/.settings/org.maven.ide.eclipse.prefs
+END
+org.eclipse.wst.validation.prefs
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/8/trunk/info.bliki.wiki/.settings/org.eclipse.wst.validation.prefs
+END

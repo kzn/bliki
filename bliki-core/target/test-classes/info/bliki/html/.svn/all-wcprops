@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1960/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html
+END
+HTML2TracTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/784/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/HTML2TracTest.java
+END
+AllHTMLTests.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/784/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/AllHTMLTests.java
+END
+HTML2JSPWikiTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/784/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/HTML2JSPWikiTest.java
+END
+HTML2MoinMoinTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/784/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/HTML2MoinMoinTest.java
+END
+HTML2WikipediaTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/1960/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/HTML2WikipediaTest.java
+END
+HTML2GoogleCodeTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/784/trunk/info.bliki.wiki/bliki-core/src/test/java/info/bliki/html/HTML2GoogleCodeTest.java
+END

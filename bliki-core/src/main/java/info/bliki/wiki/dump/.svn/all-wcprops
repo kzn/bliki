@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/2561/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump
+END
+PrintArticle.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/2561/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/PrintArticle.java
+END
+Siteinfo.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/1411/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/Siteinfo.java
+END
+WikiXMLParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/1464/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/WikiXMLParser.java
+END
+IArticleFilter.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1411/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/IArticleFilter.java
+END
+InfoBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/1349/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/InfoBox.java
+END
+WikiPatternMatcher.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/2202/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/WikiPatternMatcher.java
+END
+WikiArticle.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/1464/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/WikiArticle.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/9/trunk/info.bliki.wiki/bliki-core/src/main/java/info/bliki/wiki/dump/package.html
+END
