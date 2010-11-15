@@ -112,7 +112,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	}
 
 	/**
-	 * Check if next char is testedChar, advance cursor when true
+	 * Advance cursor if next char is testedChar
 	 * @param testedChar char to test
 	 * @return true if next char is testedChar
 	 */
@@ -126,6 +126,12 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 	}
 
+	/**
+	 * Advance cursor if next char is testedChar1 or testedChar2
+	 * @param testedChar1
+	 * @param testedChar2
+	 * @return 0 on testedChar1, 1 on testedChar2, -1 otherwise
+	 */
 	protected final int getNextChar(char testedChar1, char testedChar2) {
 		if(fCurrentPosition < fSource.length) {
 			if(fSource[fCurrentPosition] == testedChar1)
@@ -138,6 +144,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		return -1;
 	}
 
+	/**
+	 * Advance cursor if next char is a digit
+	 * @return digit status of next char
+	 */
 	protected final boolean getNextCharAsDigit() {
 		if(fCurrentPosition < fSource.length && Character.isDigit(fSource[fCurrentPosition])) {
 			fCurrentPosition++;
@@ -147,6 +157,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		return false;
 	}
 
+	/**
+	 * Advance cursor if next char is a digit with custom radix
+	 * @return digit status of next char
+	 */
 	protected final boolean getNextCharAsDigit(int radix) {
 		if(fCurrentPosition < fSource.length && Character.digit(fSource[fCurrentPosition], radix) != -1) {
 			fCurrentPosition++;
@@ -156,6 +170,11 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		return false;
 	}
 
+	/**
+	 * Return number of repeated testChar's from current position
+	 * @param testedChar
+	 * @return
+	 */
 	protected final int getNumberOfChar(char testedChar) {
 		int n = 0;
 		
@@ -185,238 +204,234 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 
-		try {
-			while (fCurrentPosition < fSource.length) {
-				char ch = fSource[fCurrentPosition++];
+		while (fCurrentPosition < fSource.length) {
+			char ch = fSource[fCurrentPosition++];
 
-				// ---------Identify the next token-------------
-				switch (ch) {
-				case '\n':
-					// check at the end of line, if there is open wiki bold or italic
-					// markup
-					reduceTokenStackBoldItalic();
-					break;
-				case '{':
-					// dummy parsing of wikipedia templates for event listeners
-					if (parseTemplate()) {
-					} else {
-						// wikipedia table handling
-						if (parseTable()) {
-							continue;
-						}
-					}
-					break;
-				case '_': // TOC identifiers __NOTOC__, __FORCETOC__ ...
-					if (parseSpecialIdentifiers()) {
+			// ---------Identify the next token-------------
+			switch (ch) {
+			case '\n':
+				// check at the end of line, if there is open wiki bold or italic
+				// markup
+				reduceTokenStackBoldItalic();
+				break;
+			case '{':
+				// dummy parsing of wikipedia templates for event listeners
+				if (parseTemplate()) {
+				} else {
+					// wikipedia table handling
+					if (parseTable()) {
 						continue;
 					}
-					break;
-				case '=': // wikipedia header ?
-					if (parseSectionHeaders()) {
-						continue;
-					}
-					break;
-				case WPList.DL_DD_CHAR: // start of <dl><dd> list
-				case WPList.DL_DT_CHAR: // start of <dl><dt> list
-				case WPList.OL_CHAR: // start of <ol> list
-				case WPList.UL_CHAR: // start of <ul> list
-					if (parseLists()) {
-						continue;
-					}
-					break;
-				case '-': // parse ---- as <hr>
-					if (parseHorizontalRuler()) {
-						continue;
-					}
-					break;
-				case ' ': // pre-formatted text?
-				case '\t':
-					if (parsePreformattedHorizontalRuler()) {
-						if (!fWhiteStart) {
-							fWhiteStart = true;
-							fWhiteStartPosition = fCurrentPosition;
-						} else {
-							createContentToken(1);
-						}
-						continue;
-					}
-					break;
 				}
-
-				if (isStartOfLine() && fWikiModel.getRecursionLevel() == 1) {
-					if (fWikiModel.stackSize() > 0 && (fWikiModel.peekNode() instanceof PTag) && isEmptyLine(1)) {
-						createContentToken(2);
-						reduceTokenStack(Configuration.HTML_PARAGRAPH_OPEN);
+				break;
+			case '_': // TOC identifiers __NOTOC__, __FORCETOC__ ...
+				if (parseSpecialIdentifiers()) {
+					continue;
+				}
+				break;
+			case '=': // wikipedia header ?
+				if (parseSectionHeaders()) {
+					continue;
+				}
+				break;
+			case WPList.DL_DD_CHAR: // start of <dl><dd> list
+			case WPList.DL_DT_CHAR: // start of <dl><dt> list
+			case WPList.OL_CHAR: // start of <ol> list
+			case WPList.UL_CHAR: // start of <ul> list
+				if (parseLists()) {
+					continue;
+				}
+				break;
+			case '-': // parse ---- as <hr>
+				if (parseHorizontalRuler()) {
+					continue;
+				}
+				break;
+			case ' ': // pre-formatted text?
+			case '\t':
+				if (parsePreformattedHorizontalRuler()) {
+					if (!fWhiteStart) {
+						fWhiteStart = true;
+						fWhiteStartPosition = fCurrentPosition;
 					} else {
-						if (!isEmptyLine(1)) {
-							if (fWikiModel.stackSize() == 0) {
-								addParagraph();
-							} else {
-								TagToken tag = fWikiModel.peekNode();
-								if (tag instanceof WPPreTag) {
-									addPreformattedText();
-								} else {
-									String allowedParents = Configuration.HTML_PARAGRAPH_OPEN.getParents();
-									if (allowedParents != null) {
+						createContentToken(1);
+					}
+					continue;
+				}
+				break;
+			}
 
-										int index = -1;
-										index = allowedParents.indexOf("|" + tag.getName() + "|");
-										if (index >= 0) {
-											addParagraph();
-										}
+			if (isStartOfLine() && fWikiModel.getRecursionLevel() == 1) {
+				if (fWikiModel.stackSize() > 0 && (fWikiModel.peekNode() instanceof PTag) && isEmptyLine(1)) {
+					createContentToken(2);
+					reduceTokenStack(Configuration.HTML_PARAGRAPH_OPEN);
+				} else {
+					if (!isEmptyLine(1)) {
+						if (fWikiModel.stackSize() == 0) {
+							addParagraph();
+						} else {
+							TagToken tag = fWikiModel.peekNode();
+							if (tag instanceof WPPreTag) {
+								addPreformattedText();
+							} else {
+								String allowedParents = Configuration.HTML_PARAGRAPH_OPEN.getParents();
+								if (allowedParents != null) {
+
+									int index = -1;
+									index = allowedParents.indexOf("|" + tag.getName() + "|");
+									if (index >= 0) {
+										addParagraph();
 									}
 								}
 							}
 						}
 					}
 				}
+			}
 
-				// ---------Identify the next token-------------
-				switch (ch) {
-				case '[':
-					if (parseWikiLink()) {
-						continue;
-					}
-					break;
-				case '\'':
+			// ---------Identify the next token-------------
+			switch (ch) {
+			case '[':
+				if (parseWikiLink()) {
+					continue;
+				}
+				break;
+			case '\'':
+				if (getNextChar('\'')) {
 					if (getNextChar('\'')) {
 						if (getNextChar('\'')) {
 							if (getNextChar('\'')) {
-								if (getNextChar('\'')) {
-									createContentToken(5);
-									return TokenBOLDITALIC;
-								}
-								fCurrentPosition -= 1;
-								fWhiteStart = true;
-								createContentToken(3);
-								return TokenBOLD;
+								createContentToken(5);
+								return TokenBOLDITALIC;
 							}
+							fCurrentPosition -= 1;
+							fWhiteStart = true;
 							createContentToken(3);
 							return TokenBOLD;
 						}
-						createContentToken(2);
-						return TokenITALIC;
+						createContentToken(3);
+						return TokenBOLD;
 					}
-					break;
-				case '<':
-					if (fHtmlCodes) {
-						int htmlStartPosition = fCurrentPosition;
-						// HTML tags are allowed
-						try {
-							switch (fStringSource.charAt(fCurrentPosition)) {
-							case '!': // <!-- HTML comment -->
-								if (parseHTMLCommentTags()) {
-									continue;
-								}
-								break;
-							default:
-
-								if (fSource[fCurrentPosition] != '/') {
-									// opening HTML tag
-									WikiTagNode tagNode = parseTag(fCurrentPosition);
-									if (tagNode != null) {
-										String tagName = tagNode.getTagName();
-										TagToken tag = fWikiModel.getTokenMap().get(tagName);
-										if (tag != null) {
-											tag = (TagToken) tag.clone();
-
-											if (tag instanceof TagNode) {
-												TagNode node = (TagNode) tag;
-												List<NodeAttribute> attributes = tagNode.getAttributesEx();
-												Attribute attr;
-												for (int i = 1; i < attributes.size(); i++) {
-													attr = attributes.get(i);
-													node.addAttribute(attr.getName(), attr.getValue(), true);
-												}
-											}
-											if (tag instanceof HTMLTag) {
-												((HTMLTag) tag).setTemplate(isTemplate());
-											}
-
-											createContentToken(1);
-
-											fCurrentPosition = fScannerPosition;
-
-											String allowedParents = tag.getParents();
-											if (allowedParents != null) {
-												reduceTokenStack(tag);
-											}
-											createTag(tag, tagNode, tagNode.getEndPosition());
-											return TokenIgnore;
-
-										}
-										break;
-									}
-								} else {
-									// closing HTML tag
-									WikiTagNode tagNode = parseTag(++fCurrentPosition);
-									if (tagNode != null) {
-										String tagName = tagNode.getTagName();
-										TagToken tag = fWikiModel.getTokenMap().get(tagName);
-										if (tag != null) {
-											createContentToken(2);
-											fCurrentPosition = fScannerPosition;
-
-											if (fWikiModel.stackSize() > 0) {
-												TagToken topToken = fWikiModel.peekNode();
-												if (topToken.getName().equals(tag.getName())) {
-													fWikiModel.popNode();
-													return TokenIgnore;
-												} else {
-													if (tag.isReduceTokenStack()) {
-														reduceStackUntilToken(tag);
-													}
-												}
-											} else {
-											}
-											return TokenIgnore;
-										}
-										break;
-									}
-								}
-							}
-						} catch (IndexOutOfBoundsException e) {
-							// do nothing
-						}
-						fCurrentPosition = htmlStartPosition;
-					}
-					break;
-				default:
-					if (Character.isLetter(ch)) {
-						if (ch == 'i' || ch == 'I') {
-							// ISBN ?
-							if (parseISBNLinks(fCurrentPosition - 1)) {
+					createContentToken(2);
+					return TokenITALIC;
+				}
+				break;
+			case '<':
+				if (fHtmlCodes) {
+					int htmlStartPosition = fCurrentPosition;
+					// HTML tags are allowed
+					try {
+						switch (fStringSource.charAt(fCurrentPosition)) {
+						case '!': // <!-- HTML comment -->
+							if (parseHTMLCommentTags()) {
 								continue;
 							}
-						}
+							break;
+						default:
 
-						if (parseURIScheme()) {
-							// a URI scheme registered in the wiki model (ftp, http,
-							// https,...)
+							if (fSource[fCurrentPosition] != '/') {
+								// opening HTML tag
+								WikiTagNode tagNode = parseTag(fCurrentPosition);
+								if (tagNode != null) {
+									String tagName = tagNode.getTagName();
+									TagToken tag = fWikiModel.getTokenMap().get(tagName);
+									if (tag != null) {
+										tag = (TagToken) tag.clone();
+
+										if (tag instanceof TagNode) {
+											TagNode node = (TagNode) tag;
+											List<NodeAttribute> attributes = tagNode.getAttributesEx();
+											Attribute attr;
+											for (int i = 1; i < attributes.size(); i++) {
+												attr = attributes.get(i);
+												node.addAttribute(attr.getName(), attr.getValue(), true);
+											}
+										}
+										if (tag instanceof HTMLTag) {
+											((HTMLTag) tag).setTemplate(isTemplate());
+										}
+
+										createContentToken(1);
+
+										fCurrentPosition = fScannerPosition;
+
+										String allowedParents = tag.getParents();
+										if (allowedParents != null) {
+											reduceTokenStack(tag);
+										}
+										createTag(tag, tagNode, tagNode.getEndPosition());
+										return TokenIgnore;
+
+									}
+									break;
+								}
+							} else {
+								// closing HTML tag
+								WikiTagNode tagNode = parseTag(++fCurrentPosition);
+								if (tagNode != null) {
+									String tagName = tagNode.getTagName();
+									TagToken tag = fWikiModel.getTokenMap().get(tagName);
+									if (tag != null) {
+										createContentToken(2);
+										fCurrentPosition = fScannerPosition;
+
+										if (fWikiModel.stackSize() > 0) {
+											TagToken topToken = fWikiModel.peekNode();
+											if (topToken.getName().equals(tag.getName())) {
+												fWikiModel.popNode();
+												return TokenIgnore;
+											} else {
+												if (tag.isReduceTokenStack()) {
+													reduceStackUntilToken(tag);
+												}
+											}
+										} else {
+										}
+										return TokenIgnore;
+									}
+									break;
+								}
+							}
+						}
+					} catch (IndexOutOfBoundsException e) {
+						// do nothing
+					}
+					fCurrentPosition = htmlStartPosition;
+				}
+				break;
+			default:
+				if (Character.isLetter(ch)) {
+					if (ch == 'i' || ch == 'I') {
+						// ISBN ?
+						if (parseISBNLinks(fCurrentPosition - 1)) {
 							continue;
 						}
+					}
 
-						if (fWikiModel.isCamelCaseEnabled() && Character.isUpperCase(ch) && fWikiModel.getRecursionLevel() <= 1) {
-							if (parseCamelCaseLink()) {
-								continue;
-							}
+					if (parseURIScheme()) {
+						// a URI scheme registered in the wiki model (ftp, http,
+						// https,...)
+						continue;
+					}
+
+					if (fWikiModel.isCamelCaseEnabled() && Character.isUpperCase(ch) && fWikiModel.getRecursionLevel() <= 1) {
+						if (parseCamelCaseLink()) {
+							continue;
 						}
 					}
 				}
-
-				if (!fWhiteStart) {
-					fWhiteStart = true;
-					fWhiteStartPosition = fCurrentPosition - 1;
-				}
-
 			}
-			if(fCurrentPosition == fSource.length)
-				fCurrentPosition++;
-			
-			// -----------------end switch while try--------------------
-		} catch (IndexOutOfBoundsException e) {
-			// end of scanner text
+
+			if (!fWhiteStart) {
+				fWhiteStart = true;
+				fWhiteStartPosition = fCurrentPosition - 1;
+			}
+
 		}
+		if(fCurrentPosition == fSource.length)
+			fCurrentPosition++;
+
+		// -----------------end switch while try--------------------
 		try {
 			createContentToken(1);
 		} catch (IndexOutOfBoundsException e) {
