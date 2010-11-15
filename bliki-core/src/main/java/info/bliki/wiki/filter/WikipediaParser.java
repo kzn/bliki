@@ -523,30 +523,28 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 		if(fStringSource.length() - fromPosition < 5)
 			return false;
-		
-		try {
-			String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
-			if (urlString.equalsIgnoreCase("isbn ")) {
-				fCurrentPosition += 4;
-				fCurrentCharacter = fSource[fCurrentPosition++];
 
-				createContentToken(6);
-				fWhiteStart = false;
-				foundISBN = true;
-				char ch;
+
+		String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
+		if (urlString.equalsIgnoreCase("isbn ")) {
+			fCurrentPosition += 4;
+			fCurrentCharacter = fSource[fCurrentPosition++];
+
+			createContentToken(6);
+			fWhiteStart = false;
+			foundISBN = true;
+			char ch;
+			ch = fSource[fCurrentPosition++];
+			while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
 				ch = fSource[fCurrentPosition++];
-				while (fCurrentPosition <= fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
-					ch = fSource[fCurrentPosition++];
-				}
 			}
-		} catch (IndexOutOfBoundsException e) {
-			if (!foundISBN) {
-				// rollback work :-)
-				fCurrentPosition = isbnStartPosition;
-			}
+
+			if(fCurrentPosition == fSource.length)
+				fCurrentPosition++;
 		}
+
 		if (foundISBN) {
-			String urlString = fStringSource.substring(isbnStartPosition - 1, fCurrentPosition - 1);
+			urlString = fStringSource.substring(isbnStartPosition - 1, fCurrentPosition - 1);
 			fCurrentPosition--;
 			fWikiModel.appendISBNLink(urlString);
 			return true;
@@ -610,24 +608,24 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		String uriSchemeName = "";
 		int index = -1;
 		boolean foundUrl = false;
-		try {
-			index = indexOfUntilNoLetter(':', fCurrentPosition);
-			if (index > 0) {
-				uriSchemeName = fStringSource.substring(fCurrentPosition - 1, index);
-				if (fWikiModel.isValidUriScheme(uriSchemeName)) {
-					// found something like "ftp", "http", "https"
-					tempPosition += uriSchemeName.length() + 1;
-					fCurrentCharacter = fSource[tempPosition++];
 
-					createContentToken(1);
-					fWhiteStart = false;
-					foundUrl = true;
-					while (tempPosition <= fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++])) {
-					}
+		index = indexOfUntilNoLetter(':', fCurrentPosition);
+		if (index > 0) {
+			uriSchemeName = fStringSource.substring(fCurrentPosition - 1, index);
+			if (fWikiModel.isValidUriScheme(uriSchemeName)) {
+				// found something like "ftp", "http", "https"
+				tempPosition += uriSchemeName.length() + 1;
+				fCurrentCharacter = fSource[tempPosition++];
 
-				}
+				createContentToken(1);
+				fWhiteStart = false;
+				foundUrl = true;
+				while (tempPosition < fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++]));
+
+				if(tempPosition == fSource.length)
+					tempPosition++;
+
 			}
-		} catch (IndexOutOfBoundsException e) {
 		}
 		if (foundUrl) {
 			String restString = fStringSource.substring(urlStartPosition - 1, tempPosition - 1);
