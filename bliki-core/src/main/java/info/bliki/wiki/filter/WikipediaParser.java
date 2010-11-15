@@ -139,50 +139,35 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	}
 
 	protected final boolean getNextCharAsDigit() {
-		int temp = fCurrentPosition;
-		try {
-			if(fCurrentPosition >= fSource.length)
-				return false;
-			char ch = fSource[fCurrentPosition++];
-			if (!Character.isDigit(ch)) {
-				fCurrentPosition = temp;
-				return false;
-			}
+		if(fCurrentPosition < fSource.length && Character.isDigit(fSource[fCurrentPosition])) {
+			fCurrentPosition++;
 			return true;
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return false;
 		}
+		
+		return false;
 	}
 
 	protected final boolean getNextCharAsDigit(int radix) {
-
-		int temp = fCurrentPosition;
-		try {
-			char ch = fSource[fCurrentPosition++];
-
-			if (Character.digit(ch, radix) == -1) {
-				fCurrentPosition = temp;
-				return false;
-			}
+		if(fCurrentPosition < fSource.length && Character.digit(fSource[fCurrentPosition], radix) != -1) {
+			fCurrentPosition++;
 			return true;
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return false;
 		}
+		
+		return false;
 	}
 
 	protected final int getNumberOfChar(char testedChar) {
-		int number = 0;
-		try {
-			while (fCurrentPosition < fSource.length && fSource[fCurrentPosition++] == testedChar) {
-				number++;
-			}
-		} catch (IndexOutOfBoundsException e) {
-
+		int n = 0;
+		
+		while(fCurrentPosition < fSource.length) {
+			if(fSource[fCurrentPosition] != testedChar)
+				break;
+			n++;
 		}
-		fCurrentPosition--;
-		return number;
+		
+		fCurrentPosition += n;
+		
+		return n;
 	}
 
 	protected boolean getNextCharAsWikiPluginIdentifierPart() {
