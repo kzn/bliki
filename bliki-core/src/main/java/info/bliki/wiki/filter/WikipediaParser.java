@@ -35,8 +35,6 @@ import java.util.List;
 public class WikipediaParser extends AbstractParser implements IParser {
 	private static final String[] TOC_IDENTIFIERS = { "TOC", "NOTOC", "FORCETOC" };
 
-	final static String HEADER_STRINGS[] = { "=", "==", "===", "====", "=====", "======" };
-
 	final static int TokenNotFound = -2;
 
 	final static int TokenIgnore = -1;
@@ -522,25 +520,27 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		if(fStringSource.length() - fromPosition < 5)
 			return false;
 
-
 		String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
-		if (urlString.equalsIgnoreCase("isbn ")) {
-			fCurrentPosition += 5;
-			
+
+		if (!urlString.equalsIgnoreCase("isbn "))
+			return false;
+		
+		fCurrentPosition += 5; // length of 'isbn '
 
 
-			createContentToken(6);
-			fWhiteStart = false;
-			foundISBN = true;
-			char ch;
+
+		createContentToken(6);
+		fWhiteStart = false;
+		foundISBN = true;
+		char ch;
+		ch = fSource[fCurrentPosition++];
+		while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
 			ch = fSource[fCurrentPosition++];
-			while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
-				ch = fSource[fCurrentPosition++];
-			}
-
-			if(fCurrentPosition == fSource.length)
-				fCurrentPosition++;
 		}
+
+		if(fCurrentPosition == fSource.length)
+			fCurrentPosition++;
+		
 
 		if (foundISBN) {
 			urlString = fStringSource.substring(isbnStartPosition - 1, fCurrentPosition - 1);
