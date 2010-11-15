@@ -267,16 +267,6 @@ public class WikipediaParser extends AbstractParser implements IParser {
 						continue;
 					}
 					break;
-				// case ':':
-				// if (parseSimpleDefinitionLists()) {
-				// continue;
-				// }
-				// break;
-				// case ';':
-				// if (parseDefinitionLists()) {
-				// continue;
-				// }
-				// break;
 				case '-': // parse ---- as <hr>
 					if (parseHorizontalRuler()) {
 						continue;
@@ -304,20 +294,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 						if (!isEmptyLine(1)) {
 							if (fWikiModel.stackSize() == 0) {
 								addParagraph();
-								// if (fWikiModel.getRecursionLevel() == 1) {
-								// addParagraph();
-								// } else {
-								// if (fCurrentPosition > 1) {
-								// addParagraph();
-								// }
-								// }
 							} else {
 								TagToken tag = fWikiModel.peekNode();
 								if (tag instanceof WPPreTag) {
 									addPreformattedText();
-									// } else if (tag instanceof PTag) {
-									// createContentToken(fWhiteStart, fWhiteStartPosition, 2);
-									// reduceTokenStack(Configuration.HTML_PARAGRAPH_OPEN);
 								} else {
 									String allowedParents = Configuration.HTML_PARAGRAPH_OPEN.getParents();
 									if (allowedParents != null) {
@@ -574,80 +554,6 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		return false;
 	}
 
-	// private boolean parseFTPLinks() {
-	// int urlStartPosition = fCurrentPosition;
-	// boolean foundUrl = false;
-	// try {
-	// String urlString = fStringSource.substring(fCurrentPosition - 1,
-	// fCurrentPosition + 2);
-	// if (urlString.equalsIgnoreCase("ftp")) {
-	// fCurrentPosition += 2;
-	// fCurrentCharacter = fSource[fCurrentPosition++];
-	//
-	// if (fCurrentCharacter == ':' && fSource[fCurrentPosition++] == '/' &&
-	// fSource[fCurrentPosition++] == '/') {
-	// createContentToken(fWhiteStart, fWhiteStartPosition, 6);
-	// fWhiteStart = false;
-	// foundUrl = true;
-	// while (Encoder.isUrlIdentifierPart(fSource[fCurrentPosition++])) {
-	// }
-	// }
-	// }
-	// } catch (IndexOutOfBoundsException e) {
-	// if (!foundUrl) {
-	// // rollback work :-)
-	// fCurrentPosition = urlStartPosition;
-	// }
-	// }
-	// if (foundUrl) {
-	// String urlString = new String(fSource, urlStartPosition - 1,
-	// fCurrentPosition - urlStartPosition);
-	// fCurrentPosition--;
-	// fWikiModel.appendExternalLink(urlString, urlString, true);
-	// return true;
-	// }
-	// return false;
-	// }
-
-	// private boolean parseHTTPLinks() {
-	// int urlStartPosition = fCurrentPosition;
-	// boolean foundUrl = false;
-	// try {
-	// int diff = 7;
-	// String urlString = fStringSource.substring(fCurrentPosition - 1,
-	// fCurrentPosition + 3);
-	// if (urlString.equalsIgnoreCase("http")) {
-	// fCurrentPosition += 3;
-	// fCurrentCharacter = fSource[fCurrentPosition++];
-	// if (fCurrentCharacter == 's') { // optional
-	// fCurrentCharacter = fSource[fCurrentPosition++];
-	// diff++;
-	// }
-	//
-	// if (fCurrentCharacter == ':' && fSource[fCurrentPosition++] == '/' &&
-	// fSource[fCurrentPosition++] == '/') {
-	// createContentToken(fWhiteStart, fWhiteStartPosition, diff);
-	// fWhiteStart = false;
-	// foundUrl = true;
-	// while (Encoder.isUrlIdentifierPart(fSource[fCurrentPosition++])) {
-	// }
-	// }
-	// }
-	// } catch (IndexOutOfBoundsException e) {
-	// if (!foundUrl) {
-	// // rollback work :-)
-	// fCurrentPosition = urlStartPosition;
-	// }
-	// }
-	// if (foundUrl) {
-	// String urlString = new String(fSource, urlStartPosition - 1,
-	// fCurrentPosition - urlStartPosition);
-	// fCurrentPosition--;
-	// fWikiModel.appendExternalLink(urlString, urlString, true);
-	// return true;
-	// }
-	// return false;
-	// }
 
 	private boolean parseMailtoLinks(int fromPosition) {
 		int urlStartPosition = fCurrentPosition;
