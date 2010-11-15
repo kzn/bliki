@@ -170,20 +170,15 @@ public abstract class AbstractParser extends WikipediaScanner {
 
 	protected boolean isEmptyLine(int diff) {
 		int temp = fCurrentPosition - diff;
-		char ch;
-		try {
-			while (true) {
-				ch = fSource[temp];
-				if (!Character.isWhitespace(ch)) {
-					return false;
-				}
-				if (ch == '\n') {
-					return true;
-				}
-				temp++;
+		while (temp < fSource.length) {
+			char ch = fSource[temp];
+			if (!Character.isWhitespace(ch)) {
+				return false;
 			}
-		} catch (IndexOutOfBoundsException e) {
-			// ..
+			if (ch == '\n') {
+				return true;
+			}
+			temp++;
 		}
 		return true;
 	}
@@ -544,40 +539,39 @@ public abstract class AbstractParser extends WikipediaScanner {
 		int level = 1;
 		int position = fCurrentPosition;
 		boolean pipeSymbolFound = false;
-		try {
-			while (true) {
-				ch = fSource[position++];
-				if (ch == '|') {
-					pipeSymbolFound = true;
-				} else if (ch == '[' && fSource[position] == '[') {
-					if (pipeSymbolFound) {
-						level++;
-						position++;
-					} else {
-						return false;
-					}
-				} else if (ch == ']' && fSource[position] == ']') {
+		while (position < fSource.length) {
+			ch = fSource[position++];
+			if(position == fSource.length)
+				return false;
+			
+			if (ch == '|') {
+				pipeSymbolFound = true;
+			} else if (ch == '[' && fSource[position] == '[') {
+				if (pipeSymbolFound) {
+					level++;
 					position++;
-					if (--level == 0) {
-						break;
-					}
-				} else if (ch == '{' || ch == '}' || ch == '<' || ch == '>') {
-					if (!pipeSymbolFound) {
-						// see
-						// http://en.wikipedia.org/wiki/Help:Page_name#Special_characters
-						return false;
-					}
+				} else {
+					return false;
 				}
-
-				if ((!pipeSymbolFound) && (ch == '\n' || ch == '\r')) {
+			} else if (ch == ']' && fSource[position] == ']') {
+				position++;
+				if (--level == 0) {
+					fCurrentPosition = position;
+					return true;
+				}
+			} else if (ch == '{' || ch == '}' || ch == '<' || ch == '>') {
+				if (!pipeSymbolFound) {
+					// see
+					// http://en.wikipedia.org/wiki/Help:Page_name#Special_characters
 					return false;
 				}
 			}
-			fCurrentPosition = position;
-			return true;
-		} catch (IndexOutOfBoundsException e) {
-			return false;
+
+			if ((!pipeSymbolFound) && (ch == '\n' || ch == '\r')) {
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public abstract void setNoToC(boolean noToC);
