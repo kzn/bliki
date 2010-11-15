@@ -525,10 +525,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 		String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
 		if (urlString.equalsIgnoreCase("isbn ")) {
-			fCurrentPosition += 4;
-			//char fCurrentCharacter;
-			fCurrentPosition++;
-			//fCurrentCharacter = fSource[fCurrentPosition++];
+			fCurrentPosition += 5;
+			
+
 
 			createContentToken(6);
 			fWhiteStart = false;
