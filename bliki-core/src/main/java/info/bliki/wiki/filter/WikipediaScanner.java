@@ -791,9 +791,9 @@ public class WikipediaScanner {
 									scanner.setModel(fWikiModel);
 									recursiveResult = scanner.replaceTemplateParameters(value, templateParameters);
 									if (recursiveResult != null) {
-										buffer.append(recursiveResult);
+										fWikiModel.appendTemplateParameter(buffer, parameterString, recursiveResult.toString());
 									} else {
-										buffer.append(value);
+										fWikiModel.appendTemplateParameter(buffer, parameterString, value);
 									}
 									bufferStart = fScannerPosition;
 								}

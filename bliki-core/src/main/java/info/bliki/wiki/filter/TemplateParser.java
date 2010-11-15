@@ -197,6 +197,8 @@ public class TemplateParser extends AbstractParser {
 				}
 
 			}
+			if(fCurrentPosition == fSource.length)
+				fCurrentPosition++;
 			// -----------------end switch while try--------------------
 		} catch (IndexOutOfBoundsException e) {
 			// end of scanner text

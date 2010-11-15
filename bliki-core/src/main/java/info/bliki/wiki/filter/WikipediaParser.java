@@ -448,7 +448,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 					if (Character.isLetter(fCurrentCharacter)) {
 						if (fCurrentCharacter == 'i' || fCurrentCharacter == 'I') {
 							// ISBN ?
-							if (parseISBNLinks()) {
+							if (parseISBNLinks(fCurrentPosition - 1)) {
 								continue;
 							}
 						}
@@ -473,6 +473,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				}
 
 			}
+			if(fCurrentPosition == fSource.length)
+				fCurrentPosition++;
+			
 			// -----------------end switch while try--------------------
 		} catch (IndexOutOfBoundsException e) {
 			// end of scanner text
@@ -534,9 +537,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		return false;
 	}
 
-	private boolean parseISBNLinks() {
-		int urlStartPosition = fCurrentPosition;
+	private boolean parseISBNLinks(int fromPosition) {
+		int isbnStartPosition = fCurrentPosition;
 		boolean foundISBN = false;
+
+		if(fStringSource.length() - fromPosition < 5)
+			return false;
+		
 		try {
 			String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
 			if (urlString.equalsIgnoreCase("isbn ")) {
@@ -555,11 +562,11 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		} catch (IndexOutOfBoundsException e) {
 			if (!foundISBN) {
 				// rollback work :-)
-				fCurrentPosition = urlStartPosition;
+				fCurrentPosition = isbnStartPosition;
 			}
 		}
 		if (foundISBN) {
-			String urlString = fStringSource.substring(urlStartPosition - 1, fCurrentPosition - 1);
+			String urlString = fStringSource.substring(isbnStartPosition - 1, fCurrentPosition - 1);
 			fCurrentPosition--;
 			fWikiModel.appendISBNLink(urlString);
 			return true;
@@ -642,10 +649,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	// return false;
 	// }
 
-	private boolean parseMailtoLinks() {
+	private boolean parseMailtoLinks(int fromPosition) {
 		int urlStartPosition = fCurrentPosition;
 		int tempPosition = fCurrentPosition;
 		boolean foundUrl = false;
+		if(fStringSource.length() - fromPosition < 7)
+			return false;
+		
 		try {
 			String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 6);
 			if (urlString.equalsIgnoreCase("mailto:")) {
@@ -685,7 +695,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	private boolean parseURIScheme() {
 		if (fCurrentCharacter == 'm' || fCurrentCharacter == 'M') {
 			// mailto ?
-			if (parseMailtoLinks()) {
+			if (parseMailtoLinks(fCurrentPosition - 1)) {
 				return true;
 			}
 		}
