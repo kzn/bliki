@@ -758,7 +758,7 @@ public class WikipediaScanner {
 			char ch;
 			int parameterStart = -1;
 			StringBuilder recursiveResult;
-			while (true) {
+			while (fScannerPosition < fSource.length) {
 				ch = fSource[fScannerPosition++];
 				if (ch == '{' && fSource[fScannerPosition] == '{' && fSource[fScannerPosition + 1] == '{'
 						&& fSource[fScannerPosition + 2] != '{') {
@@ -809,6 +809,8 @@ public class WikipediaScanner {
 					return buffer;
 				}
 			}
+			if(fScannerPosition == fSource.length)
+				fScannerPosition++;
 		} catch (IndexOutOfBoundsException e) {
 			// ignore
 		} finally {
@@ -921,39 +923,27 @@ public class WikipediaScanner {
 	}
 
 	public static final int findNestedTemplateEnd(final char[] sourceArray, int startPosition) {
-		char ch;
+		// return -1 if not found
+		//char ch;
 		// int len = sourceArray.length;
 		int countSingleOpenBraces = 0;
 		int position = startPosition;
 		try {
-			while (true) {
-				ch = sourceArray[position++];
+			while (position < sourceArray.length) { 
+				switch(sourceArray[position++]) {
+					case '{':
+						countSingleOpenBraces++;
+						break;
+					case '}':
+						if(countSingleOpenBraces > 0)
+							countSingleOpenBraces--;
+						else if(sourceArray[position] == '}')
+							return ++position;
+						break;
+				}
+/*				char ch = sourceArray[position++];
 				if (ch == '{') {
-					// if (sourceArray[position] == '{') {
-					// position++;
-					// if ((len > position) && sourceArray[position] == '{') {
-					// // template parameter beginning
-					// position++;
-					// int[] temp = findNestedParamEnd(sourceArray, position);
-					// if (temp[0] < 0) {
-					// position--;
-					// temp[0] = findNestedTemplateEnd(sourceArray, position);
-					// if (temp[0] < 0) {
-					// return -1;
-					// }
-					// }
-					// position = temp[0];
-					// } else {
-					// // template beginning
-					// int temp = findNestedTemplateEnd(sourceArray, position);
-					// if (temp < 0) {
-					// return -1;
-					// }
-					// position = temp;
-					// }
-					// } else {
 					countSingleOpenBraces++;
-					// }
 				} else if (ch == '}') {
 					if (countSingleOpenBraces > 0) {
 						countSingleOpenBraces--;
@@ -964,12 +954,13 @@ public class WikipediaScanner {
 							break;
 						}
 					}
-				}
+				}*/
 			}
-			return position;
+			return -1;
 		} catch (IndexOutOfBoundsException e) {
 			return -1;
 		}
+
 	}
 
 	public static final int[] findNestedParamEnd(final char[] sourceArray, int startPosition) {

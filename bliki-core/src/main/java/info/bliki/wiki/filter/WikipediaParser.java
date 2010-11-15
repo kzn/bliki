@@ -555,7 +555,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				foundISBN = true;
 				char ch;
 				ch = fSource[fCurrentPosition++];
-				while ((ch >= '0' && ch <= '9') || ch == '-') {
+				while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
 					ch = fSource[fCurrentPosition++];
 				}
 			}
@@ -716,7 +716,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 					createContentToken(1);
 					fWhiteStart = false;
 					foundUrl = true;
-					while (Encoder.isUrlIdentifierPart(fSource[tempPosition++])) {
+					while (tempPosition < fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++])) {
 					}
 
 				}
@@ -832,7 +832,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			StringBuilder suffixBuffer = new StringBuilder();
 
 			try {
-				while (true) {
+				while (fCurrentPosition < fSource.length) {
 					fCurrentCharacter = fSource[fCurrentPosition++];
 					if (!Character.isLowerCase(fCurrentCharacter)) {
 						fCurrentPosition--;
@@ -840,10 +840,15 @@ public class WikipediaParser extends AbstractParser implements IParser {
 					}
 					suffixBuffer.append(fCurrentCharacter);
 				}
-				String suffix = suffixBuffer.toString();
-				fEventListener.onWikiLink(fSource, startLinkPosition, endLinkPosition, suffix);
-				fWikiModel.appendRawWikipediaLink(name, suffix);
-				return true;
+				if(fCurrentPosition ==  fSource.length) {
+					fCurrentPosition = temp;
+				} else {
+					String suffix = suffixBuffer.toString();
+					fEventListener.onWikiLink(fSource, startLinkPosition, endLinkPosition, suffix);
+					fWikiModel.appendRawWikipediaLink(name, suffix);
+					return true;
+				}  
+					
 			} catch (IndexOutOfBoundsException e) {
 				fCurrentPosition = temp;
 			}
@@ -888,6 +893,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		if (isStartOfLine()) {
 			int tempCurrPosition = fCurrentPosition;
 			try {
+				if(fSource.length - fCurrentPosition < 3)
+					return false;
+				
 				if (fSource[tempCurrPosition++] == '-' && fSource[tempCurrPosition++] == '-' && fSource[tempCurrPosition++] == '-') {
 					int pos = isEndOfLine('-', tempCurrPosition);
 					if (pos > 0) {
@@ -1104,14 +1112,14 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		int tempPosition = currentPosition;
 		try {
 			char ch;
-			while (true) {
+			while (tempPosition < fSource.length) {
 				ch = fSource[tempPosition];
 				if (ch != testChar) {
 					break;
 				}
 				tempPosition++;
 			}
-			while (true) {
+			while (tempPosition < fSource.length) {
 				ch = fSource[tempPosition++];
 				if (ch == '\n') {
 					return tempPosition;

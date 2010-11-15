@@ -217,7 +217,7 @@ public class TemplateParser extends AbstractParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 		try {
-			while (true) {
+			while (fCurrentPosition < fSource.length) {
 				// if (oldCurrentPosition >= fCurrentPosition) {
 				// System.out.println("stop stop: " + oldCurrentPosition + "--" +
 				// fStringSource);
@@ -272,6 +272,8 @@ public class TemplateParser extends AbstractParser {
 				}
 
 			}
+			if(fCurrentPosition == fSource.length)
+				fCurrentPosition++;
 			// -----------------end switch while try--------------------
 		} catch (IndexOutOfBoundsException e) {
 			// end of scanner text
