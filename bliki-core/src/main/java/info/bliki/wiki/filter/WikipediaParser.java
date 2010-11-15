@@ -535,7 +535,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				foundISBN = true;
 				char ch;
 				ch = fSource[fCurrentPosition++];
-				while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
+				while (fCurrentPosition <= fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
 					ch = fSource[fCurrentPosition++];
 				}
 			}
@@ -622,7 +622,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 					createContentToken(1);
 					fWhiteStart = false;
 					foundUrl = true;
-					while (tempPosition < fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++])) {
+					while (tempPosition <= fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++])) {
 					}
 
 				}
