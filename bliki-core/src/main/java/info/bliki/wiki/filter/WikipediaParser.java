@@ -111,46 +111,31 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		}
 	}
 
+	/**
+	 * Check if next char is testedChar, advance cursor when true
+	 * @param testedChar char to test
+	 * @return true if next char is testedChar
+	 */
 	protected final boolean getNextChar(char testedChar) {
-		int temp = fCurrentPosition;
-		
-		try {
-			if(fCurrentPosition >= fSource.length)
-				return false;
-			char ch = fSource[fCurrentPosition++];
-			if (ch != testedChar) {
-				fCurrentPosition = temp;
-				return false;
-			}
+		if(fCurrentPosition < fSource.length && fSource[fCurrentPosition] == testedChar) {
+			fCurrentPosition++;
 			return true;
-
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return false;
 		}
+		
+		return false;
+
 	}
 
 	protected final int getNextChar(char testedChar1, char testedChar2) {
-		int temp = fCurrentPosition;
-		try {
-			if(fCurrentPosition >= fSource.length)
-				return -1;
-
-			int result;
-			char ch = fSource[fCurrentPosition++];
-			if (ch == testedChar1)
-				result = 0;
-			else if (ch == testedChar2)
-				result = 1;
-			else {
-				fCurrentPosition = temp;
-				return -1;
-			}
-			return result;
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return -1;
+		if(fCurrentPosition < fSource.length) {
+			if(fSource[fCurrentPosition] == testedChar1)
+				return 0;
+			
+			if(fSource[fCurrentPosition] == testedChar1)
+				return 1;
 		}
+		
+		return -1;
 	}
 
 	protected final boolean getNextCharAsDigit() {
