@@ -115,7 +115,11 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 	protected final boolean getNextChar(char testedChar) {
 		int temp = fCurrentPosition;
+		
 		try {
+			if(fCurrentPosition >= fSource.length)
+				return false;
+			
 			fCurrentCharacter = fSource[fCurrentPosition++];
 			if (fCurrentCharacter != testedChar) {
 				fCurrentPosition = temp;
@@ -132,6 +136,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected final int getNextChar(char testedChar1, char testedChar2) {
 		int temp = fCurrentPosition;
 		try {
+			if(fCurrentPosition >= fSource.length)
+				return -1;
+
 			int result;
 			fCurrentCharacter = fSource[fCurrentPosition++];
 			if (fCurrentCharacter == testedChar1)
@@ -152,6 +159,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected final boolean getNextCharAsDigit() {
 		int temp = fCurrentPosition;
 		try {
+			if(fCurrentPosition >= fSource.length)
+				return false;
+
 			fCurrentCharacter = fSource[fCurrentPosition++];
 			if (!Character.isDigit(fCurrentCharacter)) {
 				fCurrentPosition = temp;
@@ -184,7 +194,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected final int getNumberOfChar(char testedChar) {
 		int number = 0;
 		try {
-			while ((fCurrentCharacter = fSource[fCurrentPosition++]) == testedChar) {
+			while (fCurrentPosition < fSource.length && (fCurrentCharacter = fSource[fCurrentPosition++]) == testedChar) {
 				number++;
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -197,6 +207,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected boolean getNextCharAsWikiPluginIdentifierPart() {
 		int temp = fCurrentPosition;
 		try {
+			
+			if(fCurrentPosition >= fSource.length)
+				return false;
+
 			fCurrentCharacter = fSource[fCurrentPosition++];
 
 			if (!Encoder.isWikiPluginIdentifierPart(fCurrentCharacter)) {
@@ -215,7 +229,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 		try {
-			while (true) {
+			while (fCurrentPosition < fSource.length) {
 				fCurrentCharacter = fSource[fCurrentPosition++];
 
 				// ---------Identify the next token-------------
