@@ -156,7 +156,7 @@ public class TemplateParser extends AbstractParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 		try {
-			while (true) {
+			while (fCurrentPosition < fSource.length) {
 				fCurrentCharacter = fSource[fCurrentPosition++];
 
 				// ---------Identify the next token-------------
