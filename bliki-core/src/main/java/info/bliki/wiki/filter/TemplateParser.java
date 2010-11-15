@@ -157,11 +157,10 @@ public class TemplateParser extends AbstractParser {
 		fWhiteStartPosition = fCurrentPosition;
 		try {
 			while (fCurrentPosition < fSource.length) {
-				char fCurrentCharacter;
-				fCurrentCharacter = fSource[fCurrentPosition++];
+				char ch = fSource[fCurrentPosition++];
 
 				// ---------Identify the next token-------------
-				switch (fCurrentCharacter) {
+				switch (ch) {
 				case '<':
 					int htmlStartPosition = fCurrentPosition;
 					if (!fParseOnlySignature && parseIncludeWikiTags(writer, ignoreTemplateTags)) {
@@ -224,12 +223,11 @@ public class TemplateParser extends AbstractParser {
 				// fStringSource);
 				// System.exit(-1);
 				// }
-				char fCurrentCharacter;
-				fCurrentCharacter = fSource[fCurrentPosition++];
+				char ch = fSource[fCurrentPosition++];
 
 				// oldCurrentPosition = fCurrentPosition;
 				// ---------Identify the next token-------------
-				switch (fCurrentCharacter) {
+				switch (ch) {
 				case '{': // wikipedia template handling
 					if (!fParseOnlySignature && parseTemplateOrTemplateParameter(writer)) {
 						fWhiteStart = true;
