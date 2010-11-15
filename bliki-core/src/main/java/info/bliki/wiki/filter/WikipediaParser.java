@@ -171,22 +171,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	}
 
 	protected boolean getNextCharAsWikiPluginIdentifierPart() {
-		int temp = fCurrentPosition;
-		try {
-			
-			if(fCurrentPosition >= fSource.length)
-				return false;
-			char ch = fSource[fCurrentPosition++];
-
-			if (!Encoder.isWikiPluginIdentifierPart(ch)) {
-				fCurrentPosition = temp;
-				return false;
-			}
+		if(fCurrentPosition < fSource.length 
+				&& Encoder.isWikiPluginIdentifierPart(fSource[fCurrentPosition])) {
+			fCurrentPosition++;
 			return true;
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return false;
 		}
+		
+		return false;
 	}
 
 	protected int getNextToken() // throws InvalidInputException
