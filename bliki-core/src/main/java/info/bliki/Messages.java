@@ -75,8 +75,9 @@ public class Messages {
 			resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE, locale);
 			return resourceBundle;
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			//throw new RuntimeException(e);
 		}
+		return null;
 	}
 
 	public static String getString(final ResourceBundle bundle, final String key) {
