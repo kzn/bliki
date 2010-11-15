@@ -5,6 +5,8 @@ import info.bliki.wiki.model.WikiModel;
 
 import java.util.Locale;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 /**
@@ -34,6 +36,15 @@ public class FilterTestSupport extends TestCase {
         "http://www.bliki.info/wiki/${image}",
         "http://www.bliki.info/wiki/${title}");
     wikiModel.setUp();
+  }
+  
+  @Test
+  public void testSetup() {
+	  try {
+		setUp();
+	} catch(Exception e) {
+		fail();
+	}
   }
 
   /**
