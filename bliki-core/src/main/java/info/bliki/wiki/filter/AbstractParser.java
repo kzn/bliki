@@ -12,7 +12,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 	/**
 	 * The current scanned character
 	 */
-	protected char fCurrentCharacter;
+	//protected char fCurrentCharacter;
 
 	/**
 	 * The current offset in the character source array
@@ -26,7 +26,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 	public AbstractParser(String stringSource) {
 		super(stringSource);
 		fCurrentPosition = 0;
-		fCurrentCharacter = '\000';
+		//fCurrentCharacter = '\000';
 		fWhiteStart = false;
 		fWhiteStartPosition = 0;
 	}
@@ -84,6 +84,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilChar(char testedChar) {
 		int temp = fCurrentPosition;
 		try {
+			char fCurrentCharacter;
 			while ((fCurrentCharacter = fSource[fCurrentPosition++]) != testedChar) {
 			}
 			return true;
@@ -103,6 +104,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilCharOrStopAtEOL(char testedChar) {
 		int temp = fCurrentPosition;
 		try {
+			char fCurrentCharacter;
 			while ((fCurrentCharacter = fSource[fCurrentPosition++]) != testedChar) {
 				if (fCurrentCharacter == '\n' || fCurrentCharacter == '\r') {
 					return false;
@@ -127,6 +129,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilEOL() {
 		try {
 			while (true) {
+				char fCurrentCharacter;
 				fCurrentCharacter = fSource[fCurrentPosition++];
 				if (fCurrentCharacter == '\n' || fCurrentCharacter == '\r') {
 					return true;
