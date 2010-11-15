@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="bliki-core/src/main/java"/>
-	<classpathentry excluding="**" kind="src" path="bliki-core/src/main/resources"/>
 	<classpathentry kind="src" path="bliki-core/src/test/java"/>
 	<classpathentry kind="src" path="bliki-addons/src/main/java"/>
-	<classpathentry excluding="**" kind="src" path="bliki-addons/src/main/resources"/>
 	<classpathentry kind="src" path="bliki-addons/src/test/java"/>
-	<classpathentry excluding="**" kind="src" path="bliki-addons/src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-1.4.jar"/>
@@ -20,5 +17,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/iText-5.0.2.jar"/>
+	<classpathentry kind="lib" path="bliki-core/src/main/resources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
