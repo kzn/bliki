@@ -10,11 +10,6 @@ import info.bliki.wiki.tags.util.TagStack;
 
 public abstract class AbstractParser extends WikipediaScanner {
 	/**
-	 * The current scanned character
-	 */
-	//protected char fCurrentCharacter;
-
-	/**
 	 * The current offset in the character source array
 	 */
 	protected int fCurrentPosition;
@@ -26,18 +21,9 @@ public abstract class AbstractParser extends WikipediaScanner {
 	public AbstractParser(String stringSource) {
 		super(stringSource);
 		fCurrentPosition = 0;
-		//fCurrentCharacter = '\000';
 		fWhiteStart = false;
 		fWhiteStartPosition = 0;
 	}
-
-	// public void initialize(String src) {
-	// super.initialize(src, 0);
-	// fCurrentPosition = 0;
-	// fCurrentCharacter = '\000';
-	// fWhiteStart = false;
-	// fWhiteStartPosition = 0;
-	// }
 
 	/**
 	 * Read the characters until the given string is found
@@ -84,9 +70,8 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilChar(char testedChar) {
 		int temp = fCurrentPosition;
 		try {
-			char fCurrentCharacter;
-			while ((fCurrentCharacter = fSource[fCurrentPosition++]) != testedChar) {
-			}
+			while (fSource[fCurrentPosition++] != testedChar);
+			
 			return true;
 		} catch (IndexOutOfBoundsException e) {
 			fCurrentPosition = temp;
@@ -104,9 +89,9 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilCharOrStopAtEOL(char testedChar) {
 		int temp = fCurrentPosition;
 		try {
-			char fCurrentCharacter;
-			while ((fCurrentCharacter = fSource[fCurrentPosition++]) != testedChar) {
-				if (fCurrentCharacter == '\n' || fCurrentCharacter == '\r') {
+			char ch;
+			while ((ch = fSource[fCurrentPosition++]) != testedChar) {
+				if (ch == '\n' || ch == '\r') {
 					return false;
 				}
 			}
@@ -129,12 +114,12 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected final boolean readUntilEOL() {
 		try {
 			while (true) {
-				char fCurrentCharacter;
-				fCurrentCharacter = fSource[fCurrentPosition++];
-				if (fCurrentCharacter == '\n' || fCurrentCharacter == '\r') {
+				char ch = fSource[fCurrentPosition++];
+				
+				if (ch == '\n' || ch == '\r') {
 					return true;
 				}
-				if (fCurrentCharacter == '<') {
+				if (ch == '<') {
 					int newPos = readSpecialWikiTags(fCurrentPosition);
 					if (newPos >= 0) {
 						fCurrentPosition = newPos;
