@@ -869,5 +869,14 @@ public interface IWikiModel extends IConfiguration {
 	 * 
 	 */
 	public void tearDown();
+	
+	/**
+	 * Append a template parameter to sb
+	 * @param sb string builder to append
+	 * @param name template parameter name
+	 * @param value template parameter value
+	 * @return sb
+	 */
+	public StringBuilder appendTemplateParameter(StringBuilder sb, String name, String value);
 
 }

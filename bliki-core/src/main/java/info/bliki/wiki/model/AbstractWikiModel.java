@@ -1699,6 +1699,16 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override 
+	public StringBuilder appendTemplateParameter(StringBuilder sb, String name, String value) {
+		sb.append(value);
+		return sb;
+	}
+
+
+	/**
 	 * Initialize the wiki model and parse the <code>rawWikiText</code> and return
 	 * the parsed node list.
 	 * 
@@ -1715,5 +1725,6 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 		fInitialized = false;
 		return fTagStack.getNodeList();
 	}
+
 
 }
