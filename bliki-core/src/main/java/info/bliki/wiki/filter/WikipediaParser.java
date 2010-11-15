@@ -119,9 +119,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		try {
 			if(fCurrentPosition >= fSource.length)
 				return false;
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
-			if (fCurrentCharacter != testedChar) {
+			char ch = fSource[fCurrentPosition++];
+			if (ch != testedChar) {
 				fCurrentPosition = temp;
 				return false;
 			}
@@ -140,11 +139,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				return -1;
 
 			int result;
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
-			if (fCurrentCharacter == testedChar1)
+			char ch = fSource[fCurrentPosition++];
+			if (ch == testedChar1)
 				result = 0;
-			else if (fCurrentCharacter == testedChar2)
+			else if (ch == testedChar2)
 				result = 1;
 			else {
 				fCurrentPosition = temp;
@@ -162,9 +160,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		try {
 			if(fCurrentPosition >= fSource.length)
 				return false;
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
-			if (!Character.isDigit(fCurrentCharacter)) {
+			char ch = fSource[fCurrentPosition++];
+			if (!Character.isDigit(ch)) {
 				fCurrentPosition = temp;
 				return false;
 			}
@@ -179,10 +176,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 		int temp = fCurrentPosition;
 		try {
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
+			char ch = fSource[fCurrentPosition++];
 
-			if (Character.digit(fCurrentCharacter, radix) == -1) {
+			if (Character.digit(ch, radix) == -1) {
 				fCurrentPosition = temp;
 				return false;
 			}
@@ -196,8 +192,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected final int getNumberOfChar(char testedChar) {
 		int number = 0;
 		try {
-			char fCurrentCharacter;
-			while (fCurrentPosition < fSource.length && (fCurrentCharacter = fSource[fCurrentPosition++]) == testedChar) {
+			while (fCurrentPosition < fSource.length && fSource[fCurrentPosition++] == testedChar) {
 				number++;
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -213,10 +208,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			
 			if(fCurrentPosition >= fSource.length)
 				return false;
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
+			char ch = fSource[fCurrentPosition++];
 
-			if (!Encoder.isWikiPluginIdentifierPart(fCurrentCharacter)) {
+			if (!Encoder.isWikiPluginIdentifierPart(ch)) {
 				fCurrentPosition = temp;
 				return false;
 			}
@@ -231,13 +225,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	{
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
-		char fCurrentCharacter;
+
 		try {
 			while (fCurrentPosition < fSource.length) {
-				fCurrentCharacter = fSource[fCurrentPosition++];
+				char ch = fSource[fCurrentPosition++];
 
 				// ---------Identify the next token-------------
-				switch (fCurrentCharacter) {
+				switch (ch) {
 				case '\n':
 					// check at the end of line, if there is open wiki bold or italic
 					// markup
@@ -319,7 +313,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				}
 
 				// ---------Identify the next token-------------
-				switch (fCurrentCharacter) {
+				switch (ch) {
 				case '[':
 					if (parseWikiLink()) {
 						continue;
@@ -429,8 +423,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 					}
 					break;
 				default:
-					if (Character.isLetter(fCurrentCharacter)) {
-						if (fCurrentCharacter == 'i' || fCurrentCharacter == 'I') {
+					if (Character.isLetter(ch)) {
+						if (ch == 'i' || ch == 'I') {
 							// ISBN ?
 							if (parseISBNLinks(fCurrentPosition - 1)) {
 								continue;
@@ -443,7 +437,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 							continue;
 						}
 
-						if (fWikiModel.isCamelCaseEnabled() && Character.isUpperCase(fCurrentCharacter) && fWikiModel.getRecursionLevel() <= 1) {
+						if (fWikiModel.isCamelCaseEnabled() && Character.isUpperCase(ch) && fWikiModel.getRecursionLevel() <= 1) {
 							if (parseCamelCaseLink()) {
 								continue;
 							}
@@ -532,8 +526,9 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 4);
 		if (urlString.equalsIgnoreCase("isbn ")) {
 			fCurrentPosition += 4;
-			char fCurrentCharacter;
-			fCurrentCharacter = fSource[fCurrentPosition++];
+			//char fCurrentCharacter;
+			fCurrentPosition++;
+			//fCurrentCharacter = fSource[fCurrentPosition++];
 
 			createContentToken(6);
 			fWhiteStart = false;
@@ -569,8 +564,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			String urlString = fStringSource.substring(fCurrentPosition - 1, fCurrentPosition + 6);
 			if (urlString.equalsIgnoreCase("mailto:")) {
 				tempPosition += 6;
-				char fCurrentCharacter;
-				fCurrentCharacter = fSource[tempPosition++];
+
+				tempPosition++;
 
 				foundUrl = true;
 				while (!Character.isWhitespace(fSource[tempPosition++])) {
@@ -603,8 +598,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 *         models configuration..
 	 */
 	private boolean parseURIScheme() {
-		char fCurrentCharacter = fSource[fCurrentPosition - 1];
-		if (fCurrentCharacter == 'm' || fCurrentCharacter == 'M') {
+		char ch = fSource[fCurrentPosition - 1];
+		if (ch == 'm' || ch == 'M') {
 			// mailto ?
 			if (parseMailtoLinks(fCurrentPosition - 1)) {
 				return true;
@@ -622,7 +617,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			if (fWikiModel.isValidUriScheme(uriSchemeName)) {
 				// found something like "ftp", "http", "https"
 				tempPosition += uriSchemeName.length() + 1;
-				fCurrentCharacter = fSource[tempPosition++];
+				ch = fSource[tempPosition++];
 
 				createContentToken(1);
 				fWhiteStart = false;
@@ -744,13 +739,12 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 			try {
 				while (fCurrentPosition < fSource.length) {
-					char fCurrentCharacter;
-					fCurrentCharacter = fSource[fCurrentPosition++];
-					if (!Character.isLowerCase(fCurrentCharacter)) {
+					char ch = fSource[fCurrentPosition++];
+					if (!Character.isLowerCase(ch)) {
 						fCurrentPosition--;
 						break;
 					}
-					suffixBuffer.append(fCurrentCharacter);
+					suffixBuffer.append(ch);
 				}
 				if(fCurrentPosition ==  fSource.length) {
 					fCurrentPosition = temp;
