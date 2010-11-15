@@ -185,9 +185,8 @@ public abstract class AbstractParser extends WikipediaScanner {
 
 	protected int readWhitespaceUntilEndOfLine(int diff) {
 		int temp = fCurrentPosition - diff;
-		char ch;
 		while (fSource.length > temp) {
-			ch = fSource[temp];
+			char ch = fSource[temp];
 			if (!Character.isWhitespace(ch)) {
 				return -1;
 			}
@@ -203,10 +202,10 @@ public abstract class AbstractParser extends WikipediaScanner {
 
 	protected int readWhitespaceUntilStartOfLine(int diff) {
 		int temp = fCurrentPosition - diff;
-		char ch;
+
 
 		while (temp >= 0) {
-			ch = fSource[temp];
+			char ch = fSource[temp];
 			if (!Character.isWhitespace(ch)) {
 				return -1;
 			}
