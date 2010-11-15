@@ -405,8 +405,6 @@ public class WikipediaScanner {
 					int temp = readSpecialWikiTags(fScannerPosition);
 					if (temp >= 0) {
 						fScannerPosition = temp;
-						ch = fSource[fScannerPosition++];
-						continue;
 					}
 				}
 				ch = fSource[fScannerPosition++];
