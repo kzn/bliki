@@ -739,7 +739,7 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 			if (indx >= 0) {
 				namespace = rawTopicName.substring(0, indx);
 			}
-			if (namespace != null && isImageNamespace(namespace)) {
+			if (namespace != null && isFileNamespace(namespace)) {
 				parseInternalImageLink(namespace, rawLinkText);
 				return;
 			} else {
@@ -1254,7 +1254,7 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 	 * {@inheritDoc}
 	 */
 	public boolean isCategoryNamespace(String namespace) {
-		return namespace.equalsIgnoreCase(fNamespace.getCategory()) || namespace.equalsIgnoreCase(fNamespace.getCategory2());
+		return fNamespace.isCategory(namespace);
 	}
 
 	/**
@@ -1267,8 +1267,8 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isImageNamespace(String namespace) {
-		return namespace.equalsIgnoreCase(fNamespace.getImage()) || namespace.equalsIgnoreCase(fNamespace.getImage2());
+	public boolean isFileNamespace(String namespace) {
+		return fNamespace.isFile(namespace);
 	}
 
 	/**
@@ -1289,7 +1289,7 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 	 * {@inheritDoc}
 	 */
 	public boolean isNamespace(String namespace) {
-		return isImageNamespace(namespace) || isTemplateNamespace(namespace) || isCategoryNamespace(namespace);
+		return isFileNamespace(namespace) || isTemplateNamespace(namespace) || isCategoryNamespace(namespace);
 	}
 
 	/**
@@ -1310,7 +1310,7 @@ public abstract class AbstractWikiModel implements IWikiModel, IContext {
 	 * {@inheritDoc}
 	 */
 	public boolean isTemplateNamespace(String namespace) {
-		return namespace.equalsIgnoreCase(fNamespace.getTemplate()) || namespace.equalsIgnoreCase(fNamespace.getTemplate2());
+		return fNamespace.isTemplate(namespace);
 	}
 
 	/**
