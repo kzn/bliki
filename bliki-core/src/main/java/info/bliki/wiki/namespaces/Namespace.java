@@ -2,6 +2,7 @@ package info.bliki.wiki.namespaces;
 
 import info.bliki.Messages;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -538,5 +539,88 @@ public class Namespace implements INamespace {
 
 	public String getTalkspace(String namespace) {
 		return TALKSPACE_MAP.get(namespace);
+	}
+
+	@Override
+	public boolean isFile(String name) {
+		return name.equals(getImage()) || name.equals(getImage2());
+	}
+
+	@Override
+	public boolean isTemplate(String name) {
+		return name.equals(getTemplate()) || name.equals(getTemplate2());
+	}
+
+	@Override
+	public boolean isCategory(String name) {
+		return name.equals(getCategory()) || name.equals(getCategory2());
+	}
+
+	@Override
+	public boolean isUser(String name) {
+		return name.equals(getUser()) || name.equals(getUser2());
+	}
+
+	@Override
+	public boolean isMedia(String name) {
+		return name.equals(getMedia()) || name.equals(getMedia2());
+	}
+
+	@Override
+	public boolean isSpecial(String name) {
+		return name.equals(getSpecial()) || name.equals(getSpecial2());
+	}
+
+	@Override
+	public boolean isTalk(String name) {
+		return name.equals(getTalk()) || name.equals(getTalk2());
+	}
+
+	@Override
+	public boolean isUserTalk(String name) {
+		return name.equals(getUser_talk()) || name.equals(getUser_talk2());
+
+	}
+
+	@Override
+	public boolean isProject(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isProjectTalk(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isFileTalk(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isMediaWiki(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isMediaWikiTalk(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isTemplateTalk(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCategoryTalk(String name) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

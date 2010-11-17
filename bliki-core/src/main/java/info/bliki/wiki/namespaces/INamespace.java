@@ -186,4 +186,23 @@ public interface INamespace {
 	 * @return
 	 */
 	public String getTalkspace(String namespace);
+	
+	public boolean isMedia(String name);
+	public boolean isSpecial(String name);
+	public boolean isTalk(String name);
+	public boolean isUser(String name);
+	public boolean isUserTalk(String name);
+	public boolean isProject(String name);
+	public boolean isProjectTalk(String name);
+	public boolean isFile(String name);
+	public boolean isFileTalk(String name);
+	public boolean isMediaWiki(String name);
+	public boolean isMediaWikiTalk(String name);	
+	public boolean isTemplate(String name);
+	public boolean isTemplateTalk(String name);
+	public boolean isCategory(String name);
+	public boolean isCategoryTalk(String name);
+
+	
+	
 }
