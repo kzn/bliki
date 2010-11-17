@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
 public class TemplateParser extends AbstractParser {
 	private static final Pattern HTML_COMMENT_PATTERN = Pattern.compile("<!--(.*?)-->");
 
+	/**
+	 * If true, parses only signatures, ignoring templates and parameters
+	 */
 	public final boolean fParseOnlySignature;
 
 	private final boolean fRenderTemplate;
