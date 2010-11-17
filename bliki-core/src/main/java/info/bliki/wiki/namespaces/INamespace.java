@@ -1,5 +1,6 @@
 package info.bliki.wiki.namespaces;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -202,6 +203,10 @@ public interface INamespace {
 	public boolean isTemplateTalk(String name);
 	public boolean isCategory(String name);
 	public boolean isCategoryTalk(String name);
+	
+	public boolean isNamespace(String name, int type);
+	public List<String> getNamepace(int type);
+	public String getNamespaceDefault(int type);
 
 	
 	

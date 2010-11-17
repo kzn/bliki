@@ -1,5 +1,6 @@
 package info.bliki.wiki.namespaces;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,6 +331,24 @@ public class XMLNamespace implements INamespace {
 	@Override
 	public boolean isCategoryTalk(String name) {
 		return checkNamespace(name, INamespace.CATEGORY_TALK);
+	}
+
+	@Override
+	public boolean isNamespace(String name, int type) {
+		return checkNamespace(name, type);
+	}
+
+	@Override
+	public List<String> getNamepace(int type) {
+		List<String> l = new ArrayList<String>();
+		l.add(defNS[getBaseOffset(type)]);
+		l.add(localeNS[getBaseOffset(type)]);
+		return l;
+	}
+
+	@Override
+	public String getNamespaceDefault(int type) {
+		return defNS[getBaseOffset(type)];
 	}
 
 }

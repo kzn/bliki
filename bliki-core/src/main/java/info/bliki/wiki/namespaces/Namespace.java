@@ -4,6 +4,7 @@ import info.bliki.Messages;
 
 import java.io.ObjectInputStream.GetField;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -622,5 +623,22 @@ public class Namespace implements INamespace {
 	public boolean isCategoryTalk(String name) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean isNamespace(String name, int type) {
+		return false;
+	}
+
+	@Override
+	public List<String> getNamepace(int type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNamespaceDefault(int type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
