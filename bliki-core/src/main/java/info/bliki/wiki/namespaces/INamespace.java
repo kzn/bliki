@@ -12,93 +12,93 @@ public interface INamespace {
 	/**
 	 * Alias for direct links to media files.
 	 */
-	public final static Integer MEDIA_NAMESPACE_KEY = Integer.valueOf(-2);
+	public final static Integer MEDIA = Integer.valueOf(-2);
 
 	/**
 	 * Holds special pages.
 	 */
-	public final static Integer SPECIAL_NAMESPACE_KEY = Integer.valueOf(-1);
+	public final static Integer SPECIAL = Integer.valueOf(-1);
 
 	/**
 	 * "Real" content; articles. Has no prefix.
 	 */
-	public final static Integer MAIN_NAMESPACE_KEY = Integer.valueOf(0);
+	public final static Integer MAIN = Integer.valueOf(0);
 
 	/**
 	 * Talk pages of "Real" content
 	 */
-	public final static Integer TALK_NAMESPACE_KEY = Integer.valueOf(1);
+	public final static Integer TALK = Integer.valueOf(1);
 
 	/**
    * 
    */
-	public final static Integer USER_NAMESPACE_KEY = Integer.valueOf(2);
+	public final static Integer USER = Integer.valueOf(2);
 
 	/**
 	 * Talk pages for User Pages
 	 */
-	public final static Integer USER_TALK_NAMESPACE_KEY = Integer.valueOf(3);
+	public final static Integer USER_TALK = Integer.valueOf(3);
 
 	/**
 	 * Information about the wiki. Prefix is the same as $wgSitename of the PHP
 	 * installation.
 	 */
-	public final static Integer PROJECT_NAMESPACE_KEY = Integer.valueOf(4);
+	public final static Integer PROJECT = Integer.valueOf(4);
 
 	/**
    * 
    */
-	public final static Integer PROJECT_TALK_NAMESPACE_KEY = Integer.valueOf(5);
+	public final static Integer PROJECT_TALK = Integer.valueOf(5);
 
 	/**
 	 * Media description pages.
 	 */
-	public final static Integer FILE_NAMESPACE_KEY = Integer.valueOf(6);
+	public final static Integer FILE = Integer.valueOf(6);
 
 	/**
    * 
    */
-	public final static Integer FILE_TALK_NAMESPACE_KEY = Integer.valueOf(7);
+	public final static Integer FILE_TALK = Integer.valueOf(7);
 
 	/**
 	 * Site interface customisation. Protected.
 	 */
-	public final static Integer MEDIAWIKI_NAMESPACE_KEY = Integer.valueOf(8);
+	public final static Integer MEDIAWIKI = Integer.valueOf(8);
 
 	/**
    * 
    */
-	public final static Integer MEDIAWIKI_TALK_NAMESPACE_KEY = Integer.valueOf(9);
+	public final static Integer MEDIAWIKI_TALK = Integer.valueOf(9);
 
 	/**
 	 * Template pages.
 	 */
-	public final static Integer TEMPLATE_NAMESPACE_KEY = Integer.valueOf(10);
+	public final static Integer TEMPLATE = Integer.valueOf(10);
 
 	/**
    * 
    */
-	public final static Integer TEMPLATE_TALK_NAMESPACE_KEY = Integer.valueOf(11);
+	public final static Integer TEMPLATE_TALK = Integer.valueOf(11);
 
 	/**
 	 * Help pages.
 	 */
-	public final static Integer HELP_NAMESPACE_KEY = Integer.valueOf(12);
+	public final static Integer HELP = Integer.valueOf(12);
 
 	/**
    * 
    */
-	public final static Integer HELP_TALK_NAMESPACE_KEY = Integer.valueOf(13);
+	public final static Integer HELP_TALK = Integer.valueOf(13);
 
 	/**
 	 * Category description pages.
 	 */
-	public final static Integer CATEGORY_NAMESPACE_KEY = Integer.valueOf(14);
+	public final static Integer CATEGORY = Integer.valueOf(14);
 
 	/**
    * 
    */
-	public final static Integer CATEGORY_TALK_NAMESPACE_KEY = Integer.valueOf(15);
+	public final static Integer CATEGORY_TALK = Integer.valueOf(15);
 
 	public String getCategory();
 

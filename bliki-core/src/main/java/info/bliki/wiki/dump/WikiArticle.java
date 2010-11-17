@@ -62,11 +62,11 @@ public class WikiArticle {
 	 * @return
 	 */
 	public boolean isCategory() {
-		return integerNamespace.equals(INamespace.CATEGORY_NAMESPACE_KEY);
+		return integerNamespace.equals(INamespace.CATEGORY);
 	}
 
 	public boolean isFile() {
-		return integerNamespace.equals(INamespace.FILE_NAMESPACE_KEY);
+		return integerNamespace.equals(INamespace.FILE);
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class WikiArticle {
 	 * @return
 	 */
 	public boolean isMain() {
-		return integerNamespace.equals(INamespace.MAIN_NAMESPACE_KEY);
+		return integerNamespace.equals(INamespace.MAIN);
 	}
 
 	public boolean isProject() {
-		return integerNamespace.equals(INamespace.PROJECT_NAMESPACE_KEY);
+		return integerNamespace.equals(INamespace.PROJECT);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class WikiArticle {
 	 * @return
 	 */
 	public boolean isTemplate() {
-		return integerNamespace.equals(INamespace.TEMPLATE_NAMESPACE_KEY);
+		return integerNamespace.equals(INamespace.TEMPLATE);
 	}
 
 	/**
