@@ -595,12 +595,12 @@ public interface IWikiModel extends IConfiguration {
 	public boolean isEditorMode();
 
 	/**
-	 * Check if the given namespace is an image namespace
+	 * Check if the given namespace is an File namespace
 	 * 
 	 * @param namespace
 	 * @return <code>true</code> if the namespace is a image namespace.
 	 */
-	public boolean isImageNamespace(String namespace);
+	public boolean isFileNamespace(String namespace);
 
 	/**
 	 * Check if the given namespace for an interwiki link
