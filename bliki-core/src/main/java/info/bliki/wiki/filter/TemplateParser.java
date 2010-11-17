@@ -587,15 +587,28 @@ public class TemplateParser extends AbstractParser {
 		}
 		fCurrentPosition = endPosition;
 		LinkedHashMap<String, String> parameterMap = new LinkedHashMap<String, String>();
+		List<String> unnamedParameters = new ArrayList<String>();
 		for (int i = 1; i < parts.size(); i++) {
 			if (i == parts.size() - 1) {
-				createSingleParameter(i, parts.get(i), parameterMap, true);
+				createSingleParameter(parts.get(i), parameterMap, unnamedParameters, true);
 			} else {
-				createSingleParameter(i, parts.get(i), parameterMap, false);
+				createSingleParameter(parts.get(i), parameterMap, unnamedParameters, false);
 			}
 		}
+		mergeParameters(parameterMap, unnamedParameters);
+		
 		fWikiModel.substituteTemplateCall(templateName, parameterMap, writer);
 		return true;
+	}
+
+	private void mergeParameters(LinkedHashMap<String, String> parameterMap,
+			List<String> unnamedParameters) {
+		int idx = 1;
+		for(String param : unnamedParameters) {
+			String key = Integer.toString(idx++);
+			if(!parameterMap.containsKey(key))
+				parameterMap.put(key, param);
+		}
 	}
 
 	/**
@@ -653,7 +666,7 @@ public class TemplateParser extends AbstractParser {
 	 * parameters map
 	 * 
 	 */
-	private static void createSingleParameter(int parameterCounter, String srcString, Map<String, String> map,
+	private static void createSingleParameter(String srcString, Map<String, String> map, List<String> unnamedParams,
 			boolean trimNewlineRight) {
 		int currOffset = 0;
 		char[] src = srcString.toCharArray();
@@ -715,8 +728,9 @@ public class TemplateParser extends AbstractParser {
 				if (parameter != null) {
 					map.put(parameter, value);
 				} else {
-					String intParameter = Integer.toString(parameterCounter);
-					map.put(intParameter, value);
+					unnamedParams.add(value);
+					//String intParameter = Integer.toString(parameterCounter);
+					//map.put(intParameter, value);
 				}
 			}
 		}
