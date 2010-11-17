@@ -168,6 +168,7 @@ public class WikipediaScanner {
 				case '|':
 					ch = fSource[fScannerPosition++];
 					if (ch == '|') {
+						// '||' - cell separator
 						if (cell != null) {
 							cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition - 2);
 							cell = null;
@@ -181,6 +182,7 @@ public class WikipediaScanner {
 				case '!':
 					ch = fSource[fScannerPosition++];
 					if (ch == '!') {
+						// '!!' - table header
 						if (cell != null) {
 							cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition - 2);
 							cell = null;
@@ -233,6 +235,7 @@ public class WikipediaScanner {
 				// simulate newline
 				fScannerPosition = 0;
 			}
+			// '||' match
 			if (fSource[fScannerPosition++] != '|') {
 				return null;
 			}
@@ -252,12 +255,14 @@ public class WikipediaScanner {
 					cell = null;
 					cells = new ArrayList<WPCell>();
 					row = new WPRow(cells);
+					// '\n||' match
 					if (fSource[fScannerPosition] != '|' || fSource[fScannerPosition + 1] != '|') {
 						return table;
 					}
 					continue;
 				case '|':
 					ch = fSource[fScannerPosition++];
+					// '||' match
 					if (ch == '|') {
 						if (cell != null) {
 							cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition - 2);
@@ -318,6 +323,14 @@ public class WikipediaScanner {
 			list = new WPList();
 
 			while (true) {
+				/**
+				 * Definition item/pair parsing
+				 * ; Definition lists
+				 * ; item : definition
+				 * ; semicolon plus term
+				 * : colon plus definition
+				 * -> <b>deflist</b> <b>item</b> -> <def> def</def>
+				 */
 				if (ch == WPList.DL_DD_CHAR && lastCh == WPList.DL_DT_CHAR && sequence != null) {
 					startPosition = fScannerPosition;
 					if (listElement != null) {
@@ -350,6 +363,7 @@ public class WikipediaScanner {
 					}
 					lastCh = ' ';
 				}
+				/* normal list parsing? */
 				if (ch == '\n' || fScannerPosition == 0) {
 					startPosition = fScannerPosition;
 					if (listElement != null) {
@@ -365,6 +379,7 @@ public class WikipediaScanner {
 					case WPList.UL_CHAR:
 						count = 1;
 						lastCh = ch;
+						// count number of repetions
 						while (fSource[fScannerPosition] == WPList.UL_CHAR || fSource[fScannerPosition] == WPList.OL_CHAR
 								|| fSource[fScannerPosition] == WPList.DL_DD_CHAR || fSource[fScannerPosition] == WPList.DL_DT_CHAR) {
 							count++;
@@ -400,7 +415,7 @@ public class WikipediaScanner {
 						return list;
 					}
 				}
-
+				// parse possible tags
 				if (ch == '<') {
 					int temp = readSpecialWikiTags(fScannerPosition);
 					if (temp >= 0) {
@@ -538,6 +553,7 @@ public class WikipediaScanner {
 		try {
 			while (true) {
 				ch = fSource[fScannerPosition++];
+				// find '-->'
 				if (ch == '-' && fSource[fScannerPosition] == '-' && fSource[fScannerPosition + 1] == '>') {
 					return fScannerPosition + 2;
 				}
@@ -585,6 +601,7 @@ public class WikipediaScanner {
 		try {
 			while (true) {
 				ch = fSource[fScannerPosition++];
+				// find '</nowiki>
 				if (ch == '<' && fSource[fScannerPosition] == '/' && fSource[fScannerPosition + 1] == 'n'
 						&& fSource[fScannerPosition + 2] == 'o' && fSource[fScannerPosition + 3] == 'w' && fSource[fScannerPosition + 4] == 'i'
 						&& fSource[fScannerPosition + 5] == 'k' && fSource[fScannerPosition + 6] == 'i' && fSource[fScannerPosition + 7] == '>') {
@@ -605,6 +622,7 @@ public class WikipediaScanner {
 		try {
 			while (true) {
 				ch = fSource[fScannerPosition++];
+				// find '<!--'
 				if (ch == '<' && fSource[fScannerPosition] == '!' && fSource[fScannerPosition + 1] == '-'
 						&& fSource[fScannerPosition + 2] == '-') {
 					// start of HTML comment
@@ -612,6 +630,7 @@ public class WikipediaScanner {
 					if (fScannerPosition == (-1)) {
 						return -1;
 					}
+				// find '<nowiki>'	
 				} else if (ch == '<' && fSource[fScannerPosition] == 'n' && fSource[fScannerPosition + 1] == 'o'
 						&& fSource[fScannerPosition + 2] == 'w' && fSource[fScannerPosition + 3] == 'i' && fSource[fScannerPosition + 4] == 'k'
 						&& fSource[fScannerPosition + 5] == 'i' && fSource[fScannerPosition + 6] == '>') {
@@ -620,6 +639,7 @@ public class WikipediaScanner {
 					if (fScannerPosition == (-1)) {
 						return -1;
 					}
+				// find '\n{|'
 				} else if (ch == '\n' && fSource[fScannerPosition] == '{' && fSource[fScannerPosition + 1] == '|') {
 					// assume nested table
 					count++;
@@ -630,6 +650,7 @@ public class WikipediaScanner {
 					while (ch == ' ' || ch == '\t') {
 						ch = fSource[fScannerPosition++];
 					}
+					// find '|}'
 					if (ch == '|' && fSource[fScannerPosition] == '}') {
 						count--;
 						if (count == 0) {
@@ -658,7 +679,7 @@ public class WikipediaScanner {
 				// TODO scan for NOWIKI and HTML comments
 
 				if (ch == '[') {
-					// scan for Wiki links, which could contain '|' character
+					// scan/skip for Wiki links, which could contain '|' character
 					int countBrackets = 1;
 					fScannerPosition++;
 					while (countBrackets > 0) {
@@ -672,7 +693,7 @@ public class WikipediaScanner {
 					ch = fSource[fScannerPosition];
 					continue;
 				} else if (ch == '{') {
-					// scan for Wiki templates, which could contain '|' character
+					// scan/skip for Wiki templates, which could contain '|' character
 					int countCurlyBrackets = 1;
 					fScannerPosition++;
 					while (countCurlyBrackets > 0) {
@@ -687,6 +708,7 @@ public class WikipediaScanner {
 					continue;
 				}
 				if (ch == '|') {
+					// don't allow '||'
 					if (fSource[fScannerPosition + 1] == '|') {
 						return -1;
 					}
@@ -758,6 +780,7 @@ public class WikipediaScanner {
 			StringBuilder recursiveResult;
 			while (fScannerPosition < fSource.length) {
 				ch = fSource[fScannerPosition++];
+				// find for '{{{[^{]'
 				if (ch == '{' && fSource[fScannerPosition] == '{' && fSource[fScannerPosition + 1] == '{'
 						&& fSource[fScannerPosition + 2] != '{') {
 					fScannerPosition += 2;
@@ -855,12 +878,14 @@ public class WikipediaScanner {
 		try {
 			while (currOffset < endOffset) {
 				ch = srcArray[currOffset++];
+				// match '[['
 				if (ch == '[' && srcArray[currOffset] == '[') {
 					currOffset++;
 					temp[0] = findNestedEnd(srcArray, '[', ']', currOffset);
 					if (temp[0] >= 0) {
 						currOffset = temp[0];
 					}
+				// match '{{'
 				} else if (ch == '{' && srcArray[currOffset] == '{') {
 					currOffset++;
 					if (srcArray[currOffset] == '{' && srcArray[currOffset + 1] != '{') {
