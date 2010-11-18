@@ -331,7 +331,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 							if (fSource[fCurrentPosition] != '/') {
 								// opening HTML tag
-								WikiTagNode tagNode = parseTag(fCurrentPosition);
+								WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
 								if (tagNode != null) {
 									String tagName = tagNode.getTagName();
 									TagToken tag = fWikiModel.getTokenMap().get(tagName);
@@ -353,7 +353,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 
 										createContentToken(1);
 
-										fCurrentPosition = fScannerPosition;
+										fCurrentPosition = scanner.getPosition();//fScannerPosition;
 
 										String allowedParents = tag.getParents();
 										if (allowedParents != null) {
@@ -367,13 +367,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 								}
 							} else {
 								// closing HTML tag
-								WikiTagNode tagNode = parseTag(++fCurrentPosition);
+								WikiTagNode tagNode = scanner.parseTag(++fCurrentPosition);
 								if (tagNode != null) {
 									String tagName = tagNode.getTagName();
 									TagToken tag = fWikiModel.getTokenMap().get(tagName);
 									if (tag != null) {
 										createContentToken(2);
-										fCurrentPosition = fScannerPosition;
+										fCurrentPosition = scanner.getPosition();//fScannerPosition;
 
 										if (fWikiModel.stackSize() > 0) {
 											TagToken topToken = fWikiModel.peekNode();
@@ -586,7 +586,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		int index = -1;
 		boolean foundUrl = false;
 
-		index = indexOfUntilNoLetter(':', fCurrentPosition);
+		index = scanner.indexOfUntilNoLetter(':', fCurrentPosition);
 		if (index > 0) {
 			uriSchemeName = fStringSource.substring(fCurrentPosition - 1, index);
 			if (fWikiModel.isValidUriScheme(uriSchemeName)) {
@@ -813,12 +813,12 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	private boolean parseLists() {
 		// set scanner pointer to '\n' character:
 		if (isStartOfLine()) {
-			setPosition(fCurrentPosition - 2);
-			WPList list = wpList();
+			scanner.setPosition(fCurrentPosition - 2);
+			WPList list = scanner.wpList();
 			if (list != null && !list.isEmpty()) {
 				createContentToken(1);
 				reduceTokenStack(list);
-				fCurrentPosition = getPosition() - 1;
+				fCurrentPosition = scanner.getPosition() - 1;
 				fWikiModel.append(list);
 				return true;
 			}
@@ -893,13 +893,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	private boolean parseTable() {
 		if (isStartOfLine()) {
 			// wiki table ?
-			setPosition(fCurrentPosition - 1);
-			WPTable table = wpTable(fTableOfContentTag);
+			scanner.setPosition(fCurrentPosition - 1);
+			WPTable table = scanner.wpTable(fTableOfContentTag);
 			if (table != null) {
 				createContentToken(1);
 				reduceTokenStack(table);
 				// set pointer behind: "\n|}"
-				fCurrentPosition = getPosition();
+				fCurrentPosition = scanner.getPosition();
 				fWikiModel.append(table);
 				// table.filter(fSource, fWikiModel);
 				return true;
@@ -914,7 +914,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		if (fSource[fCurrentPosition] == '{') {
 			int templateStartPosition = fCurrentPosition + 1;
 			if (fSource[templateStartPosition] != '{') {
-				int templateEndPosition = findNestedTemplateEnd(fSource, templateStartPosition);
+				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fSource, templateStartPosition);
 				if (templateEndPosition > 0) {
 					fEventListener.onTemplate(fSource, templateStartPosition, templateEndPosition - 2);
 					return true;

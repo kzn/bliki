@@ -8,7 +8,12 @@ import info.bliki.wiki.model.Configuration;
 import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.tags.util.TagStack;
 
-public abstract class AbstractParser extends WikipediaScanner {
+public abstract class AbstractParser  {
+	
+	protected WikipediaScanner scanner;
+	String fStringSource;
+	char[] fSource;
+	IWikiModel fWikiModel;
 	/**
 	 * The current offset in the character source array
 	 */
@@ -19,7 +24,11 @@ public abstract class AbstractParser extends WikipediaScanner {
 	protected int fWhiteStartPosition = 0;
 
 	public AbstractParser(String stringSource) {
-		super(stringSource);
+		scanner = new WikipediaScanner(stringSource);
+		fStringSource = stringSource;
+		fSource = fStringSource.toCharArray();
+		fWikiModel = scanner.fWikiModel;
+		//super(stringSource);
 		fCurrentPosition = 0;
 		fWhiteStart = false;
 		fWhiteStartPosition = 0;
@@ -120,7 +129,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 					return true;
 				}
 				if (ch == '<') {
-					int newPos = readSpecialWikiTags(fCurrentPosition);
+					int newPos = scanner.readSpecialWikiTags(fCurrentPosition);
 					if (newPos >= 0) {
 						fCurrentPosition = newPos;
 					}
@@ -498,6 +507,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 			// WikipediaParser parser = new WikipediaParser(rawWikitext,
 			// wikiModel.isTemplateTopic(), wikiModel.getWikiListener());
 			setModel(wikiModel);
+
 			setNoToC(noTOC);
 			runParser();
 			return localStack;
@@ -525,6 +535,11 @@ public abstract class AbstractParser extends WikipediaScanner {
 		}
 
 		return localStack;
+	}
+
+	public void setModel(IWikiModel wikiModel) {
+		scanner.setModel(wikiModel);
+		fWikiModel = wikiModel;
 	}
 
 	/**
@@ -615,7 +630,7 @@ public abstract class AbstractParser extends WikipediaScanner {
 		int redirectEnd = -1;
 		for (int i = 0; i < rawWikiText.length(); i++) {
 			if (rawWikiText.charAt(i) == '#') {
-				if (startsWith(rawWikiText, i + 1, "redirect", true)) {
+				if (WikipediaScanner.startsWith(rawWikiText, i + 1, "redirect", true)) {
 					redirectStart = rawWikiText.indexOf("[[", i + 8);
 					if (redirectStart > i + 8) {
 						redirectStart += 2;

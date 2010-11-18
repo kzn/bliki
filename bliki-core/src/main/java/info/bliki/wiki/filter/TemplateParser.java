@@ -312,7 +312,7 @@ public class TemplateParser extends AbstractParser {
 				if (fSource[fCurrentPosition] != '/') {
 					// starting tag
 					int lessThanStart = fCurrentPosition - 1;
-					WikiTagNode tagNode = parseTag(fCurrentPosition);
+					WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
 					if (tagNode != null) {
 						fCurrentPosition = tagNode.getEndPosition();
 						int tagStart = fCurrentPosition;
@@ -458,7 +458,7 @@ public class TemplateParser extends AbstractParser {
 
 				if (fSource[fCurrentPosition] != '/') {
 					// starting tag
-					WikiTagNode tagNode = parseTag(fCurrentPosition);
+					WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
 					if (tagNode != null) {
 						fCurrentPosition = tagNode.getEndPosition();
 						String tagName = tagNode.getTagName();
@@ -510,7 +510,7 @@ public class TemplateParser extends AbstractParser {
 			int startTemplatePosition = ++fCurrentPosition;
 			if (fSource[fCurrentPosition] == '{' && fSource[fCurrentPosition + 1] != '{') {
 				// parse template parameters
-				int[] templateEndPosition = findNestedParamEnd(fSource, fCurrentPosition + 1);
+				int[] templateEndPosition = WikipediaScanner.findNestedParamEnd(fSource, fCurrentPosition + 1);
 				if (templateEndPosition[0] < 0) {
 					if (templateEndPosition[1] < 0) {
 						--fCurrentPosition;
@@ -523,7 +523,7 @@ public class TemplateParser extends AbstractParser {
 					return parseTemplateParameter(writer, startTemplatePosition, templateEndPosition[0]);
 				}
 			} else {
-				int templateEndPosition = findNestedTemplateEnd(fSource, fCurrentPosition);
+				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fSource, fCurrentPosition);
 				if (templateEndPosition < 0) {
 					fCurrentPosition--;
 				} else {
@@ -651,7 +651,7 @@ public class TemplateParser extends AbstractParser {
 		int endOffset = startOffset + len;
 		List<String> resultList = new ArrayList<String>();
 		objs[0] = resultList;
-		resultList = splitByPipe(src, currOffset, endOffset, resultList);
+		resultList = WikipediaScanner.splitByPipe(src, currOffset, endOffset, resultList);
 		if (resultList.size() <= 1) {
 			// set the template name
 			objs[1] = new String(src, startOffset, len);
@@ -683,7 +683,7 @@ public class TemplateParser extends AbstractParser {
 				ch = src[currOffset++];
 				if (ch == '[' && src[currOffset] == '[') {
 					currOffset++;
-					temp[0] = findNestedEnd(src, '[', ']', currOffset);
+					temp[0] = WikipediaScanner.findNestedEnd(src, '[', ']', currOffset);
 					if (temp[0] >= 0) {
 						currOffset = temp[0];
 					}
@@ -691,18 +691,18 @@ public class TemplateParser extends AbstractParser {
 					currOffset++;
 					if (src[currOffset] == '{' && src[currOffset + 1] != '{') {
 						currOffset++;
-						temp = findNestedParamEnd(src, currOffset);
+						temp = WikipediaScanner.findNestedParamEnd(src, currOffset);
 						if (temp[0] >= 0) {
 							currOffset = temp[0];
 						} else {
 							currOffset--;
-							temp[0] = findNestedTemplateEnd(src, currOffset);
+							temp[0] = WikipediaScanner.findNestedTemplateEnd(src, currOffset);
 							if (temp[0] >= 0) {
 								currOffset = temp[0];
 							}
 						}
 					} else {
-						temp[0] = findNestedTemplateEnd(src, currOffset);
+						temp[0] = WikipediaScanner.findNestedTemplateEnd(src, currOffset);
 						if (temp[0] >= 0) {
 							currOffset = temp[0];
 						}
