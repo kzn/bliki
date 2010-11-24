@@ -12,7 +12,7 @@ public abstract class AbstractParser  {
 	
 	protected WikipediaScanner scanner;
 	String fStringSource;
-	char[] fSource;
+	//char[] fSource;
 	IWikiModel fWikiModel;
 	/**
 	 * The current offset in the character source array
@@ -26,7 +26,7 @@ public abstract class AbstractParser  {
 	public AbstractParser(String stringSource) {
 		scanner = new WikipediaScanner(stringSource);
 		fStringSource = stringSource;
-		fSource = fStringSource.toCharArray();
+		//fSource = fStringSource.toCharArray();
 		fWikiModel = scanner.fWikiModel;
 		//super(stringSource);
 		fCurrentPosition = 0;
@@ -79,7 +79,7 @@ public abstract class AbstractParser  {
 	protected final boolean readUntilChar(char testedChar) {
 		int temp = fCurrentPosition;
 		try {
-			while (fSource[fCurrentPosition++] != testedChar);
+			while (fStringSource.charAt(fCurrentPosition++) != testedChar);
 			
 			return true;
 		} catch (IndexOutOfBoundsException e) {
@@ -99,7 +99,7 @@ public abstract class AbstractParser  {
 		int temp = fCurrentPosition;
 		try {
 			char ch;
-			while ((ch = fSource[fCurrentPosition++]) != testedChar) {
+			while ((ch = fStringSource.charAt(fCurrentPosition++)) != testedChar) {
 				if (ch == '\n' || ch == '\r') {
 					return false;
 				}
@@ -123,7 +123,7 @@ public abstract class AbstractParser  {
 	protected final boolean readUntilEOL() {
 		try {
 			while (true) {
-				char ch = fSource[fCurrentPosition++];
+				char ch = fStringSource.charAt(fCurrentPosition++);
 				
 				if (ch == '\n' || ch == '\r') {
 					return true;
@@ -179,8 +179,8 @@ public abstract class AbstractParser  {
 
 	protected boolean isEmptyLine(int diff) {
 		int temp = fCurrentPosition - diff;
-		while (temp < fSource.length) {
-			char ch = fSource[temp];
+		while (temp < fStringSource.length()) {
+			char ch = fStringSource.charAt(temp);
 			if (!Character.isWhitespace(ch)) {
 				return false;
 			}
@@ -194,8 +194,8 @@ public abstract class AbstractParser  {
 
 	protected int readWhitespaceUntilEndOfLine(int diff) {
 		int temp = fCurrentPosition - diff;
-		while (fSource.length > temp) {
-			char ch = fSource[temp];
+		while (fStringSource.length() > temp) {
+			char ch = fStringSource.charAt(temp);
 			if (!Character.isWhitespace(ch)) {
 				return -1;
 			}
@@ -214,7 +214,7 @@ public abstract class AbstractParser  {
 
 
 		while (temp >= 0) {
-			char ch = fSource[temp];
+			char ch = fStringSource.charAt(temp);
 			if (!Character.isWhitespace(ch)) {
 				return -1;
 			}
@@ -553,21 +553,21 @@ public abstract class AbstractParser  {
 		int level = 1;
 		int position = fCurrentPosition;
 		boolean pipeSymbolFound = false;
-		while (position < fSource.length) {
-			ch = fSource[position++];
-			if(position == fSource.length)
+		while (position < fStringSource.length()) {
+			ch = fStringSource.charAt(position++);
+			if(position == fStringSource.length())
 				return false;
 			
 			if (ch == '|') {
 				pipeSymbolFound = true;
-			} else if (ch == '[' && fSource[position] == '[') {
+			} else if (ch == '[' && fStringSource.charAt(position) == '[') {
 				if (pipeSymbolFound) {
 					level++;
 					position++;
 				} else {
 					return false;
 				}
-			} else if (ch == ']' && fSource[position] == ']') {
+			} else if (ch == ']' && fStringSource.charAt(position) == ']') {
 				position++;
 				if (--level == 0) {
 					fCurrentPosition = position;

@@ -117,7 +117,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return true if next char is testedChar
 	 */
 	protected final boolean getNextChar(char testedChar) {
-		if(fCurrentPosition < fSource.length && fSource[fCurrentPosition] == testedChar) {
+		if(fCurrentPosition < fStringSource.length() && fStringSource.charAt(fCurrentPosition) == testedChar) {
 			fCurrentPosition++;
 			return true;
 		}
@@ -133,11 +133,11 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return 0 on testedChar1, 1 on testedChar2, -1 otherwise
 	 */
 	protected final int getNextChar(char testedChar1, char testedChar2) {
-		if(fCurrentPosition < fSource.length) {
-			if(fSource[fCurrentPosition] == testedChar1)
+		if(fCurrentPosition < fStringSource.length()) {
+			if(fStringSource.charAt(fCurrentPosition) == testedChar1)
 				return 0;
 			
-			if(fSource[fCurrentPosition] == testedChar1)
+			if(fStringSource.charAt(fCurrentPosition) == testedChar1)
 				return 1;
 		}
 		
@@ -149,7 +149,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return digit status of next char
 	 */
 	protected final boolean getNextCharAsDigit() {
-		if(fCurrentPosition < fSource.length && Character.isDigit(fSource[fCurrentPosition])) {
+		if(fCurrentPosition < fStringSource.length() && Character.isDigit(fStringSource.charAt(fCurrentPosition))) {
 			fCurrentPosition++;
 			return true;
 		}
@@ -162,7 +162,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return digit status of next char
 	 */
 	protected final boolean getNextCharAsDigit(int radix) {
-		if(fCurrentPosition < fSource.length && Character.digit(fSource[fCurrentPosition], radix) != -1) {
+		if(fCurrentPosition < fStringSource.length() && Character.digit(fStringSource.charAt(fCurrentPosition), radix) != -1) {
 			fCurrentPosition++;
 			return true;
 		}
@@ -178,8 +178,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	protected final int getNumberOfChar(char testedChar) {
 		int n = 0;
 		
-		while(fCurrentPosition < fSource.length) {
-			if(fSource[fCurrentPosition] != testedChar)
+		while(fCurrentPosition < fStringSource.length()) {
+			if(fStringSource.charAt(fCurrentPosition) != testedChar)
 				break;
 			n++;
 		}
@@ -190,8 +190,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	}
 
 	protected boolean getNextCharAsWikiPluginIdentifierPart() {
-		if(fCurrentPosition < fSource.length 
-				&& Encoder.isWikiPluginIdentifierPart(fSource[fCurrentPosition])) {
+		if(fCurrentPosition < fStringSource.length() 
+				&& Encoder.isWikiPluginIdentifierPart(fStringSource.charAt(fCurrentPosition))) {
 			fCurrentPosition++;
 			return true;
 		}
@@ -204,8 +204,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 
-		while (fCurrentPosition < fSource.length) {
-			char ch = fSource[fCurrentPosition++];
+		while (fCurrentPosition < fStringSource.length()) {
+			char ch = fStringSource.charAt(fCurrentPosition++);
 
 			// ---------Identify the next token-------------
 			switch (ch) {
@@ -329,7 +329,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 							break;
 						default:
 
-							if (fSource[fCurrentPosition] != '/') {
+							if (fStringSource.charAt(fCurrentPosition) != '/') {
 								// opening HTML tag
 								WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
 								if (tagNode != null) {
@@ -428,7 +428,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			}
 
 		}
-		if(fCurrentPosition == fSource.length)
+		if(fCurrentPosition == fStringSource.length())
 			fCurrentPosition++;
 
 		// -----------------end switch while try--------------------
@@ -455,7 +455,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			int currentPos = fCurrentPosition;
 			int whiteEndPosition = fCurrentPosition - 2;
 			while (whiteEndPosition > fWhiteStartPosition) {
-				if (!Character.isWhitespace(fSource[whiteEndPosition])) {
+				if (!Character.isWhitespace(fStringSource.charAt(whiteEndPosition))) {
 					whiteEndPosition++;
 					break;
 				}
@@ -509,12 +509,12 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		fWhiteStart = false;
 		foundISBN = true;
 		char ch;
-		ch = fSource[fCurrentPosition++];
-		while (fCurrentPosition < fSource.length && (ch >= '0' && ch <= '9') || ch == '-') {
-			ch = fSource[fCurrentPosition++];
+		ch = fStringSource.charAt(fCurrentPosition++);
+		while (fCurrentPosition < fStringSource.length() && (ch >= '0' && ch <= '9') || ch == '-') {
+			ch = fStringSource.charAt(fCurrentPosition++);
 		}
 
-		if(fCurrentPosition == fSource.length)
+		if(fCurrentPosition == fStringSource.length())
 			fCurrentPosition++;
 		
 
@@ -543,7 +543,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				tempPosition++;
 
 				foundUrl = true;
-				while (!Character.isWhitespace(fSource[tempPosition++])) {
+				while (!Character.isWhitespace(fStringSource.charAt(tempPosition++))) {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -573,7 +573,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 *         models configuration..
 	 */
 	private boolean parseURIScheme() {
-		char ch = fSource[fCurrentPosition - 1];
+		char ch = fStringSource.charAt(fCurrentPosition - 1);
 		if (ch == 'm' || ch == 'M') {
 			// mailto ?
 			if (parseMailtoLinks(fCurrentPosition - 1)) {
@@ -592,14 +592,14 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			if (fWikiModel.isValidUriScheme(uriSchemeName)) {
 				// found something like "ftp", "http", "https"
 				tempPosition += uriSchemeName.length() + 1;
-				ch = fSource[tempPosition++];
+				ch = fStringSource.charAt(tempPosition++);
 
 				createContentToken(1);
 				fWhiteStart = false;
 				foundUrl = true;
-				while (tempPosition < fSource.length && Encoder.isUrlIdentifierPart(fSource[tempPosition++]));
+				while (tempPosition < fStringSource.length() && Encoder.isUrlIdentifierPart(fStringSource.charAt(tempPosition++)));
 
-				if(tempPosition == fSource.length)
+				if(tempPosition == fStringSource.length())
 					tempPosition++;
 
 			}
@@ -626,13 +626,13 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		int temp = fCurrentPosition;
 		boolean isCamelCase = false;
 		try {
-			char ch = fSource[temp++];
+			char ch = fStringSource.charAt(temp++);
 			while (Character.isLetterOrDigit(ch)) {
 				if (Character.isUpperCase(ch)) {
 					// at least 2 upper case characters appear in the word
 					isCamelCase = true;
 				}
-				ch = fSource[temp++];
+				ch = fStringSource.charAt(temp++);
 			}
 		} catch (IndexOutOfBoundsException iobe) {
 		}
@@ -713,19 +713,19 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			StringBuilder suffixBuffer = new StringBuilder();
 
 			try {
-				while (fCurrentPosition < fSource.length) {
-					char ch = fSource[fCurrentPosition++];
+				while (fCurrentPosition < fStringSource.length()) {
+					char ch = fStringSource.charAt(fCurrentPosition++);
 					if (!Character.isLowerCase(ch)) {
 						fCurrentPosition--;
 						break;
 					}
 					suffixBuffer.append(ch);
 				}
-				if(fCurrentPosition ==  fSource.length) {
+				if(fCurrentPosition ==  fStringSource.length()) {
 					fCurrentPosition = temp;
 				} else {
 					String suffix = suffixBuffer.toString();
-					fEventListener.onWikiLink(fSource, startLinkPosition, endLinkPosition, suffix);
+					fEventListener.onWikiLink(fStringSource, startLinkPosition, endLinkPosition, suffix);
 					fWikiModel.appendRawWikipediaLink(name, suffix);
 					return true;
 				}  
@@ -734,7 +734,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				fCurrentPosition = temp;
 			}
 
-			fEventListener.onWikiLink(fSource, startLinkPosition, endLinkPosition, "");
+			fEventListener.onWikiLink(fStringSource, startLinkPosition, endLinkPosition, "");
 			fWikiModel.appendRawWikipediaLink(name, "");
 			return true;
 		} else {
@@ -774,10 +774,10 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		if (isStartOfLine()) {
 			int tempCurrPosition = fCurrentPosition;
 			try {
-				if(fSource.length - fCurrentPosition < 3)
+				if(fStringSource.length() - fCurrentPosition < 3)
 					return false;
 				
-				if (fSource[tempCurrPosition++] == '-' && fSource[tempCurrPosition++] == '-' && fSource[tempCurrPosition++] == '-') {
+				if (fStringSource.charAt(tempCurrPosition++) == '-' && fStringSource.charAt(tempCurrPosition++) == '-' && fStringSource.charAt(tempCurrPosition++) == '-') {
 					int pos = isEndOfLine('-', tempCurrPosition);
 					if (pos > 0) {
 						HrTag hr = new HrTag();
@@ -846,7 +846,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			int headerEndPosition = endIndex;
 			char ch;
 			while (headerEndPosition > 0) {
-				ch = fSource[--headerEndPosition];
+				ch = fStringSource.charAt(--headerEndPosition);
 				if (!Character.isWhitespace(ch)) {
 					break;
 				}
@@ -858,7 +858,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			int startPosition = headerStartPosition;
 			int endPosition = headerEndPosition + 1;
 			while (headerStartPosition < headerEndPosition) {
-				if (fSource[headerStartPosition] == '=' && fSource[headerEndPosition] == '=') {
+				if (fStringSource.charAt(headerStartPosition) == '=' && fStringSource.charAt(headerEndPosition) == '=') {
 					level++;
 					headerStartPosition++;
 					headerEndPosition--;
@@ -879,7 +879,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 			if (headerEndPosition > headerStartPosition) {
 				head = fStringSource.substring(headerStartPosition, headerEndPosition);
 			}
-			fEventListener.onHeader(fSource, startPosition, endPosition, headerStartPosition, headerEndPosition, level);
+			fEventListener.onHeader(fStringSource, startPosition, endPosition, headerStartPosition, headerEndPosition, level);
 			fCurrentPosition = endIndex;
 
 			if (head != null) {
@@ -911,12 +911,12 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	private boolean parseTemplate() {
 		// dummy parsing of Wikipedia templates for event listeners
 		// doesn't change fCurrentPosition
-		if (fSource[fCurrentPosition] == '{') {
+		if (fStringSource.charAt(fCurrentPosition) == '{') {
 			int templateStartPosition = fCurrentPosition + 1;
-			if (fSource[templateStartPosition] != '{') {
+			if (fStringSource.charAt(templateStartPosition) != '{') {
 				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fStringSource, templateStartPosition);
 				if (templateEndPosition > 0) {
-					fEventListener.onTemplate(fSource, templateStartPosition, templateEndPosition - 2);
+					fEventListener.onTemplate(fStringSource, templateStartPosition, templateEndPosition - 2);
 					return true;
 				}
 			}
@@ -930,25 +930,25 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return
 	 */
 	private boolean parseSpecialIdentifiers() {
-		if(fCurrentPosition >= fSource.length)
+		if(fCurrentPosition >= fStringSource.length())
 			return false;
-		if (fSource[fCurrentPosition] == '_') {
+		if (fStringSource.charAt(fCurrentPosition) == '_') {
 			fCurrentPosition++;
 			int tocEndPosition = fCurrentPosition;
 			char ch = 0;
-			while (tocEndPosition < fSource.length) {
-				ch = fSource[tocEndPosition++];
+			while (tocEndPosition < fStringSource.length()) {
+				ch = fStringSource.charAt(tocEndPosition++);
 				if (ch >= 'A' && ch <= 'Z') {
 					continue;
 				}
 				break;
 			}
 			
-			if(tocEndPosition == fSource.length)
+			if(tocEndPosition == fStringSource.length())
 				return false;
 			
 			
-			if (ch == '_' && fSource[tocEndPosition] == '_') {
+			if (ch == '_' && fStringSource.charAt(tocEndPosition) == '_') {
 				String tocIdent = fStringSource.substring(fCurrentPosition, tocEndPosition - 1);
 				boolean tocRecognized = false;
 				for (int i = 0; i < TOC_IDENTIFIERS.length; i++) {
@@ -987,7 +987,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 */
 	private boolean isStartOfLine() {
 		if (fCurrentPosition >= 2) {
-			if (fSource[fCurrentPosition - 2] == '\n') {
+			if (fStringSource.charAt(fCurrentPosition - 2) == '\n') {
 				return true;
 			}
 		} else if (fCurrentPosition == 1) {
@@ -1000,15 +1000,15 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		int tempPosition = currentPosition;
 		try {
 			char ch;
-			while (tempPosition < fSource.length) {
-				ch = fSource[tempPosition];
+			while (tempPosition < fStringSource.length()) {
+				ch = fStringSource.charAt(tempPosition);
 				if (ch != testChar) {
 					break;
 				}
 				tempPosition++;
 			}
-			while (tempPosition < fSource.length) {
-				ch = fSource[tempPosition++];
+			while (tempPosition < fStringSource.length()) {
+				ch = fStringSource.charAt(tempPosition++);
 				if (ch == '\n') {
 					return tempPosition;
 				} else if (!Character.isWhitespace(ch)) {
@@ -1034,8 +1034,8 @@ public class WikipediaParser extends AbstractParser implements IParser {
 				macroBodyString = fStringSource.substring(startMacroPosition, index0);
 				fCurrentPosition = index0 + endTag.length() + 2;
 			} else {
-				macroBodyString = fStringSource.substring(startMacroPosition, fSource.length);
-				fCurrentPosition = fSource.length;
+				macroBodyString = fStringSource.substring(startMacroPosition, fStringSource.length());
+				fCurrentPosition = fStringSource.length();
 			}
 		} else {
 			macroBodyString = null;

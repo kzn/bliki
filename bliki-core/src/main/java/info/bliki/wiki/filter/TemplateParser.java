@@ -159,8 +159,8 @@ public class TemplateParser extends AbstractParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 		try {
-			while (fCurrentPosition < fSource.length) {
-				char ch = fSource[fCurrentPosition++];
+			while (fCurrentPosition < fStringSource.length()) {
+				char ch = fStringSource.charAt(fCurrentPosition++);
 
 				// ---------Identify the next token-------------
 				switch (ch) {
@@ -173,13 +173,13 @@ public class TemplateParser extends AbstractParser {
 					break;
 				case '~':
 					int tildeCounter = 0;
-					if (fSource[fCurrentPosition] == '~' && fSource[fCurrentPosition + 1] == '~') {
+ 					if (fStringSource.charAt(fCurrentPosition) == '~' && fStringSource.charAt(fCurrentPosition + 1) == '~') {
 						// parse signatures '~~~', '~~~~' or '~~~~~'
 						tildeCounter = 3;
 						try {
-							if (fSource[fCurrentPosition + 2] == '~') {
+							if (fStringSource.charAt(fCurrentPosition + 2) == '~') {
 								tildeCounter = 4;
-								if (fSource[fCurrentPosition + 3] == '~') {
+								if (fStringSource.charAt(fCurrentPosition + 3) == '~') {
 									tildeCounter = 5;
 								}
 							}
@@ -200,7 +200,7 @@ public class TemplateParser extends AbstractParser {
 				}
 
 			}
-			if(fCurrentPosition == fSource.length)
+			if(fCurrentPosition == fStringSource.length())
 				fCurrentPosition++;
 			// -----------------end switch while try--------------------
 		} catch (IndexOutOfBoundsException e) {
@@ -220,13 +220,13 @@ public class TemplateParser extends AbstractParser {
 		fWhiteStart = true;
 		fWhiteStartPosition = fCurrentPosition;
 		try {
-			while (fCurrentPosition < fSource.length) {
+			while (fCurrentPosition < fStringSource.length()) {
 				// if (oldCurrentPosition >= fCurrentPosition) {
 				// System.out.println("stop stop: " + oldCurrentPosition + "--" +
 				// fStringSource);
 				// System.exit(-1);
 				// }
-				char ch = fSource[fCurrentPosition++];
+				char ch = fStringSource.charAt(fCurrentPosition++);
 
 				// oldCurrentPosition = fCurrentPosition;
 				// ---------Identify the next token-------------
@@ -248,13 +248,13 @@ public class TemplateParser extends AbstractParser {
 					break;
 				case '~':
 					int tildeCounter = 0;
-					if (fSource[fCurrentPosition] == '~' && fSource[fCurrentPosition + 1] == '~') {
+					if (fStringSource.charAt(fCurrentPosition) == '~' && fStringSource.charAt(fCurrentPosition + 1) == '~') {
 						// parse signatures '~~~', '~~~~' or '~~~~~'
 						tildeCounter = 3;
 						try {
-							if (fSource[fCurrentPosition + 2] == '~') {
+							if (fStringSource.charAt(fCurrentPosition + 2) == '~') {
 								tildeCounter = 4;
-								if (fSource[fCurrentPosition + 3] == '~') {
+								if (fStringSource.charAt(fCurrentPosition + 3) == '~') {
 									tildeCounter = 5;
 								}
 							}
@@ -275,7 +275,7 @@ public class TemplateParser extends AbstractParser {
 				}
 
 			}
-			if(fCurrentPosition == fSource.length)
+			if(fCurrentPosition == fStringSource.length())
 				fCurrentPosition++;
 			// -----------------end switch while try--------------------
 		} catch (IndexOutOfBoundsException e) {
@@ -301,7 +301,7 @@ public class TemplateParser extends AbstractParser {
 	 */
 	protected boolean parseIncludeWikiTags(StringBuilder writer, boolean ignoreTemplateTags) throws IOException {
 		try {
-			switch (fSource[fCurrentPosition]) {
+			switch (fStringSource.charAt(fCurrentPosition)) {
 			case '!': // <!-- html comment -->
 				if (parseHTMLCommentTags(writer)) {
 					return true;
@@ -309,7 +309,7 @@ public class TemplateParser extends AbstractParser {
 				break;
 			default:
 
-				if (fSource[fCurrentPosition] != '/') {
+				if (fStringSource.charAt(fCurrentPosition) != '/') {
 					// starting tag
 					int lessThanStart = fCurrentPosition - 1;
 					WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
@@ -448,7 +448,7 @@ public class TemplateParser extends AbstractParser {
 
 	protected boolean parseSpecialWikiTags(Appendable writer) throws IOException {
 		try {
-			switch (fSource[fCurrentPosition]) {
+			switch (fStringSource.charAt(fCurrentPosition)) {
 			case '!': // <!-- html comment -->
 				if (parseHTMLCommentTags(writer)) {
 					return true;
@@ -456,7 +456,7 @@ public class TemplateParser extends AbstractParser {
 				break;
 			default:
 
-				if (fSource[fCurrentPosition] != '/') {
+				if (fStringSource.charAt(fCurrentPosition) != '/') {
 					// starting tag
 					WikiTagNode tagNode = scanner.parseTag(fCurrentPosition);
 					if (tagNode != null) {
@@ -505,10 +505,10 @@ public class TemplateParser extends AbstractParser {
 	}
 
 	private boolean parseTemplateOrTemplateParameter(Appendable writer) throws IOException {
-		if (fSource[fCurrentPosition] == '{') {
+		if (fStringSource.charAt(fCurrentPosition) == '{') {
 			appendContent(writer, fWhiteStart, fWhiteStartPosition, 1, true);
 			int startTemplatePosition = ++fCurrentPosition;
-			if (fSource[fCurrentPosition] == '{' && fSource[fCurrentPosition + 1] != '{') {
+			if (fStringSource.charAt(fCurrentPosition) == '{' && fStringSource.charAt(fCurrentPosition + 1) != '{') {
 				// parse template parameters
 				int[] templateEndPosition = WikipediaScanner.findNestedParamEnd(fStringSource, fCurrentPosition + 1);
 				if (templateEndPosition[0] < 0) {
@@ -574,7 +574,7 @@ public class TemplateParser extends AbstractParser {
 					// if (function.charAt(0) == '#') {
 					// #if:, #ifeq:,...
 					parts.set(0, templateName.substring(currOffset));
-					plainContent = templateFunction.parseFunction(parts, fWikiModel, fSource, startTemplatePosition + currOffset, endOffset);
+					plainContent = templateFunction.parseFunction(parts, fWikiModel, fStringSource, startTemplatePosition + currOffset, endOffset);
 					fCurrentPosition = endPosition;
 					if (plainContent != null) {
 						TemplateParser.parseRecursive(plainContent, fWikiModel, writer, false, false);

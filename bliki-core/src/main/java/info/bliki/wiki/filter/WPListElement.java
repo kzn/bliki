@@ -55,10 +55,10 @@ public class WPListElement {
 	 * @param endPos
 	 *          The endPos to set.
 	 */
-	public void createTagStack(char[] src, IWikiModel wikiModel, int endPos) {
+	public void createTagStack(String src, IWikiModel wikiModel, int endPos) {
 		fEndPos = endPos;
 		if (fEndPos > fStartPos) {
-			String rawWikiText = new String(src, fStartPos, fEndPos - fStartPos);
+			String rawWikiText = src.substring(fStartPos, fEndPos);
 			AbstractParser parser = wikiModel.createNewInstance(rawWikiText);
 			fStack = parser.parseRecursiveInternal(wikiModel, true, true);
 		}
