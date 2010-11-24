@@ -123,4 +123,16 @@ public class TemplateFunctionsTest extends TestCase {
 		String expecting = "The names: TER and N/A and SRIRAM";
 		assertEquals(expecting, wikiModel.parseTemplates("The names: {{#$:names|upper|' and '|n/a}}"));
 	}
+	
+	public void testSwitch1() throws Exception {
+		assertEquals(wikiModel.parseTemplates("{{#switch:1|a=b|1=c}}"), "c");
+	}
+	
+	public void testSwitch2() throws Exception {
+		assertEquals(wikiModel.parseTemplates("{{#switch:1.0|a=b|1=c}}"), "c");
+	}
+	
+	public void testSwitch3() throws Exception {
+		assertEquals(wikiModel.parseTemplates("{{#switch:a|+a=b|1.0=c|d}}"), "d");
+	}
 }
