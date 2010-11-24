@@ -4,6 +4,8 @@ import info.bliki.wiki.model.IWikiModel;
 
 import java.util.List;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 /**
  * A template parser function for <code>{{ #switch: ... }}</code> syntax.
  * 
@@ -47,7 +49,15 @@ public class Switch extends AbstractTemplateFunction {
 				if (index < 0 && i == list.size() - 1) {
 					return parsedLHS;
 				}
-				if (equalsTypes(conditionString, parsedLHS)) {
+				boolean hasDigits = false;
+				
+				for(int j = 0; j != conditionString.length(); j++)
+					if(Character.isDigit(conditionString.charAt(j))) {
+						hasDigits = true;
+						break;
+					}
+						
+				if (equalsTypes(conditionString, parsedLHS, hasDigits)) {
 					if (index >= 0) {
 						return temp.substring(index + 1).trim();
 					} else {
@@ -61,32 +71,59 @@ public class Switch extends AbstractTemplateFunction {
 		return null;
 	}
 
-	private boolean equalsTypes(String first, String second) {
+	private boolean equalsTypes(String first, String second, boolean hasDigits) {
+		
 
-		boolean result = false;
 		if (first.length() == 0) {
 			return second.length() == 0;
 		}
 		if (second.length() == 0) {
 			return first.length() == 0;
 		}
+		
+		
+		
+		switch(tryAsNumbers(first, second, hasDigits)) {
+		case 1:
+			return true;
+		case 0:
+			return false;
+		case -1:
+		default:
+			return first.equals(second);
+		}
+	}
+
+	/**
+	 * 
+	 * @param first
+	 * @param second
+	 * @param hasDigits
+	 * @return -1, if not numbers, 0 - if not equal, 1 if equal
+	 */
+	private int tryAsNumbers(String first, String second, boolean hasDigits) {
+		
 		if (first.charAt(0) == '+') {
 			first = first.substring(1);
 		}
+		
 		if (second.charAt(0) == '+') {
 			second = second.substring(1);
 		}
-
+		
+		if(!NumberUtils.isNumber(first) || !NumberUtils.isNumber(second))
+			return -1;
+		
 		try {
 			double d1 = Double.parseDouble(first);
 			double d2 = Double.parseDouble(second);
 			if (d1 == d2) {
-				result = true;
+				return 1;
 			}
 		} catch (NumberFormatException e) {
-			result = first.equals(second);
+			return -1;
 		}
-
-		return result;
+		
+		return 0;
 	}
 }
