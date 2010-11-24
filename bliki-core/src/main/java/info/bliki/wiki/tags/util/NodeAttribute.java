@@ -23,7 +23,8 @@ public class NodeAttribute extends Attribute {
 	 * The page this attribute is extracted from.
 	 */
 	// protected Page mPage;
-	protected char[] mText;
+	//protected char[] mText;
+	protected String mText;
 
 	/**
 	 * The starting offset of the name within the page. If negative, the name is
@@ -64,21 +65,21 @@ public class NodeAttribute extends Attribute {
 	 *            The quote, if any, surrounding the value of the attribute,
 	 *            (i.e. ' or "), or zero if none.
 	 */
-	public NodeAttribute(char[] text, int name_start, int name_end,
+	public NodeAttribute(String text, int name_start, int name_end,
 			int value_start, int value_end, char quote) {
 		// mPage = page;
 		mText = text;
 		mNameStart = name_start;
 		mNameEnd = name_end;
 		if (name_end > name_start) {
-			mName = new String(mText, name_start, name_end - name_start);
+			mName = mText.substring(name_start, name_end);//new String(mText, name_start, name_end - name_start);
 		} else {
 			mName = null;
 		}
 		mValueStart = value_start;
 		mValueEnd = value_end;
 		if (value_end > value_start) {
-			mValue = new String(mText, value_start, value_end - value_start);
+			mValue = mText.substring(value_start, value_end);//new String(mText, value_start, value_end - value_start);
 			mAssignment = "=";
 		} else {
 			mValue = null;
@@ -212,7 +213,7 @@ public class NodeAttribute extends Attribute {
 			// setName (ret); // cache the value
 			// }
 			if ((null != mText) && (0 <= mNameStart)) {
-				ret = new String(mText, mNameStart, mNameEnd - mNameStart);
+				ret = mText.substring(mNameStart, mNameEnd);//new String(mText, mNameStart, mNameEnd - mNameStart);
 				setName(ret); // cache the value
 			}
 		}
