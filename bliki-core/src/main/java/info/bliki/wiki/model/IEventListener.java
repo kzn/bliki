@@ -21,7 +21,7 @@ public interface IEventListener {
 	 *          <code>===</code> gives level 3;<code>====</code> gives level 4...)
 	 * @deprecated
 	 */
-	public void onHeader(char[] src, int rawStart, int rawEnd, int level);
+	public void onHeader(String src, int rawStart, int rawEnd, int level);
 
 	/**
 	 * Notify the listener about a parsed header.
@@ -41,7 +41,7 @@ public interface IEventListener {
 	 *          the header level (i.e. <code>==</code> gives level 2;
 	 *          <code>===</code> gives level 3;<code>====</code> gives level 4...)
 	 */
-	public void onHeader(char[] src, int startPosition, int endPosition, int rawStart, int rawEnd, int level);
+	public void onHeader(String src, int startPosition, int endPosition, int rawStart, int rawEnd, int level);
 
 	/**
 	 * Notify the listener about a parsed wiki link.
@@ -64,7 +64,7 @@ public interface IEventListener {
 	 * Dolphins are [[aquatic mammal]]s that are closely related to [[whale]]s and [[porpoise]]s.
 	 * </pre>
 	 */
-	public void onWikiLink(char[] src, int rawStart, int rawEnd, String suffix);
+	public void onWikiLink(String src, int rawStart, int rawEnd, String suffix);
 
 	/**
 	 * Notify the listener about a parsed template.
@@ -78,5 +78,5 @@ public interface IEventListener {
 	 *          the end offset of the wiki link excluding the wiki template end
 	 *          tags '}}'
 	 */
-	public void onTemplate(char[] src, int rawStart, int rawEnd);
+	public void onTemplate(String src, int rawStart, int rawEnd);
 }
