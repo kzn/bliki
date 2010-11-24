@@ -19,7 +19,7 @@ public class Switch extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) {
 		if (list.size() > 2) {
 			String defaultResult = null;
 			String conditionString = parse(list.get(0), model);

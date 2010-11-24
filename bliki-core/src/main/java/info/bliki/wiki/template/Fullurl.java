@@ -18,7 +18,7 @@ public class Fullurl extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) throws UnsupportedEncodingException {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) throws UnsupportedEncodingException {
 		if (list.size() > 0) {
 			String arg0 = parse(list.get(0), model);
 			if (arg0.length() > 0 && list.size() == 1) {

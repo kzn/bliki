@@ -25,7 +25,8 @@ public abstract class AbstractTemplateFunction implements ITemplateFunction {
 		return null;
 	}
 
-	public abstract String parseFunction(List<String> parts, IWikiModel model, char[] src, int beginIndex, int endIndex) throws IOException;
+	@Override
+	public abstract String parseFunction(List<String> parts, IWikiModel model, String src, int beginIndex, int endIndex) throws IOException;
 	
 	/**
 	 * Parse the given plain content string with the template parser.

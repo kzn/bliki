@@ -17,7 +17,7 @@ public class Ifexist extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) {
 		if (list.size() > 1) {
 			String wikiTopicName = parse(list.get(0), model);
 			int index = wikiTopicName.indexOf(":");

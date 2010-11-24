@@ -17,10 +17,11 @@ public class Subst extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> parts, IWikiModel model, char[] src, int beginIndex, int endIndex) {
+	public String parseFunction(List<String> parts, IWikiModel model, String src, int beginIndex, int endIndex) {
 		StringBuilder template = new StringBuilder(endIndex - beginIndex + 4);
 		template.append("{{");
-		template.append(src, beginIndex, endIndex - beginIndex);
+		//template.append(src, beginIndex, endIndex - beginIndex);
+		template.append(src, beginIndex, endIndex);
 		template.append("}}");
 		return parse(template.toString(), model);
 	}

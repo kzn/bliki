@@ -34,7 +34,7 @@ public interface ITemplateFunction {
 	 * @throws IOException
 	 * @see TemplateParser#parseTemplate(StringBuffer)
 	 */
-	public String parseFunction(List<String> parts, IWikiModel model, char[] src, int beginIndex, int endIndex) throws IOException;
+	public String parseFunction(List<String> parts, IWikiModel model, String src, int beginIndex, int endIndex) throws IOException;
 
 	/**
 	 * Return a short description of the implemented template function

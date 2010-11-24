@@ -41,7 +41,7 @@ public class DollarContext extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) throws IOException {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) throws IOException {
 		if (model instanceof IContext) {
 			IContext context = (IContext) model;
 			if (list.size() > 0) {

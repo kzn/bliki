@@ -21,7 +21,7 @@ public class If extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) {
 		if (list.size() > 1) {
 			String ifCondition = parse(list.get(0), model);
 			if (ifCondition.length() > 0) {

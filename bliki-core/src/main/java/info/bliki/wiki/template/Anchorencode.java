@@ -16,7 +16,7 @@ public class Anchorencode extends AbstractTemplateFunction {
 
 	}
 
-	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) {
+	public String parseFunction(List<String> list, IWikiModel model, String src, int beginIndex, int endIndex) {
 		if (list.size() > 0) {
 			String result = parse(list.get(0), model);
 			return Encoder.encodeDotUrl(result);
