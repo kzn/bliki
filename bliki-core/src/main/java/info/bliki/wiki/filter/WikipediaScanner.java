@@ -340,7 +340,7 @@ public class WikipediaScanner {
 				if (ch == WPList.DL_DD_CHAR && lastCh == WPList.DL_DT_CHAR && sequence != null) {
 					startPosition = fScannerPosition;
 					if (listElement != null) {
-						listElement.createTagStack(fSource, fWikiModel, fScannerPosition - 1);
+						listElement.createTagStack(fStringSource, fWikiModel, fScannerPosition - 1);
 						list.add(listElement);
 						listElement = null;
 					}
@@ -361,7 +361,7 @@ public class WikipediaScanner {
 							fScannerPosition--; // to detect next row
 							startPos = fScannerPosition;
 							listElement = new WPListElement(count, sequence, startPos);
-							listElement.createTagStack(fSource, fWikiModel, startPos);
+							listElement.createTagStack(fStringSource, fWikiModel, startPos);
 							list.add(listElement);
 							listElement = null;
 							break;
@@ -373,7 +373,7 @@ public class WikipediaScanner {
 				if (ch == '\n' || fScannerPosition == 0) {
 					startPosition = fScannerPosition;
 					if (listElement != null) {
-						listElement.createTagStack(fSource, fWikiModel, fScannerPosition - 1);
+						listElement.createTagStack(fStringSource, fWikiModel, fScannerPosition - 1);
 						list.add(listElement);
 						listElement = null;
 					}
@@ -407,7 +407,7 @@ public class WikipediaScanner {
 								fScannerPosition--; // to detect next row
 								startPos = fScannerPosition;
 								listElement = new WPListElement(count, sequence, startPos);
-								listElement.createTagStack(fSource, fWikiModel, startPos);
+								listElement.createTagStack(fStringSource, fWikiModel, startPos);
 								list.add(listElement);
 								listElement = null;
 								break;
@@ -435,7 +435,7 @@ public class WikipediaScanner {
 		}
 		if (list != null) {
 			if (listElement != null) {
-				listElement.createTagStack(fSource, fWikiModel, fScannerPosition - 1);
+				listElement.createTagStack(fStringSource, fWikiModel, fScannerPosition - 1);
 				list.add(listElement);
 				listElement = null;
 			}
@@ -1592,7 +1592,7 @@ public class WikipediaScanner {
 	 *          The array of positions.
 	 */
 	private void standalone(ArrayList<NodeAttribute> attributes, int[] bookmarks) {
-		attributes.add(new NodeAttribute(fSource, bookmarks[1], bookmarks[2], -1, -1, (char) 0));
+		attributes.add(new NodeAttribute(fStringSource, bookmarks[1], bookmarks[2], -1, -1, (char) 0));
 	}
 
 	/**
@@ -1604,7 +1604,7 @@ public class WikipediaScanner {
 	 *          The array of positions.
 	 */
 	private void empty(ArrayList<NodeAttribute> attributes, int[] bookmarks) {
-		attributes.add(new NodeAttribute(fSource, bookmarks[1], bookmarks[2], bookmarks[2] + 1, -1, (char) 0));
+		attributes.add(new NodeAttribute(fStringSource, bookmarks[1], bookmarks[2], bookmarks[2] + 1, -1, (char) 0));
 	}
 
 	/**
@@ -1616,7 +1616,7 @@ public class WikipediaScanner {
 	 *          The array of positions.
 	 */
 	private void naked(ArrayList<NodeAttribute> attributes, int[] bookmarks) {
-		attributes.add(new NodeAttribute(fSource, bookmarks[1], bookmarks[2], bookmarks[3], bookmarks[4], (char) 0));
+		attributes.add(new NodeAttribute(fStringSource, bookmarks[1], bookmarks[2], bookmarks[3], bookmarks[4], (char) 0));
 	}
 
 	/**
@@ -1628,7 +1628,7 @@ public class WikipediaScanner {
 	 *          The array of positions.
 	 */
 	private void single_quote(ArrayList<NodeAttribute> attributes, int[] bookmarks) {
-		attributes.add(new NodeAttribute(fSource, bookmarks[1], bookmarks[2], bookmarks[4] + 1, bookmarks[5], '\''));
+		attributes.add(new NodeAttribute(fStringSource, bookmarks[1], bookmarks[2], bookmarks[4] + 1, bookmarks[5], '\''));
 	}
 
 	/**
@@ -1640,7 +1640,7 @@ public class WikipediaScanner {
 	 *          The array of positions.
 	 */
 	private void double_quote(ArrayList<NodeAttribute> attributes, int[] bookmarks) {
-		attributes.add(new NodeAttribute(fSource, bookmarks[1], bookmarks[2], bookmarks[5] + 1, bookmarks[6], '"'));
+		attributes.add(new NodeAttribute(fStringSource, bookmarks[1], bookmarks[2], bookmarks[5] + 1, bookmarks[6], '"'));
 	}
 
 	protected int readSpecialWikiTags(int start) {
