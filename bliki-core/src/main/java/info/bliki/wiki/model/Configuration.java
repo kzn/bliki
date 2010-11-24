@@ -519,7 +519,7 @@ public class Configuration implements IConfiguration {
 	/**
 	 * Limits the Scanner buffer.
 	 */
-	public final static int TEMPLATE_BUFFER_LIMIT = 65536;
+	public final static int TEMPLATE_BUFFER_LIMIT = 262144;
 
 	/**
 	 * Limits the template parameter value length
