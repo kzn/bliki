@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.spinn3r.log5j.Logger;
+
 public class WikipediaScanner {
+	
+	private static final Logger logger = Logger.getLogger();
 
 	public final static String TAG_NAME = "$TAG_NAME";
 
@@ -75,6 +79,7 @@ public class WikipediaScanner {
 			if (fScannerPosition < 0) {
 				// simulate newline
 				fScannerPosition = 0;
+				logger.info("Simulating newline");
 			}
 			if (fSource[fScannerPosition++] != '{') {
 				return null;
@@ -203,6 +208,7 @@ public class WikipediaScanner {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
+			logger.warn(e);
 			// ...
 			fScannerPosition = fSource.length;
 			if (cell != null) {

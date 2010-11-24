@@ -930,17 +930,24 @@ public class WikipediaParser extends AbstractParser implements IParser {
 	 * @return
 	 */
 	private boolean parseSpecialIdentifiers() {
+		if(fCurrentPosition >= fSource.length)
+			return false;
 		if (fSource[fCurrentPosition] == '_') {
 			fCurrentPosition++;
 			int tocEndPosition = fCurrentPosition;
-			char ch;
-			while (true) {
+			char ch = 0;
+			while (tocEndPosition < fSource.length) {
 				ch = fSource[tocEndPosition++];
 				if (ch >= 'A' && ch <= 'Z') {
 					continue;
 				}
 				break;
 			}
+			
+			if(tocEndPosition == fSource.length)
+				return false;
+			
+			
 			if (ch == '_' && fSource[tocEndPosition] == '_') {
 				String tocIdent = fStringSource.substring(fCurrentPosition, tocEndPosition - 1);
 				boolean tocRecognized = false;
