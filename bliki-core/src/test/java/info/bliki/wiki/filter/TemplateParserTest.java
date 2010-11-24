@@ -96,13 +96,13 @@ public class TemplateParserTest extends FilterTestSupport {
 	public void testTemplateCall2() {
 		// see method WikiTestModel#getRawWikiContent()
 		assertEquals("start-b) First: 3 Second: b-end start-c) First: sdfsf Second: klj-end", wikiModel.parseTemplates(
-				"start-{{templ1|a=3|b}}-end start-{{templ2|sdfsf|klj}}-end", false));
+				"start-{{templ1|a=3|a|b}}-end start-{{templ2|sdfsf|klj}}-end", false));
 	}
 
 	public void testTemplateCall3() {
 		// see method WikiTestModel#getRawWikiContent()
 		assertEquals("b) First: Test1 Second: c) First: sdfsf Second: klj \n" + "\n" + "", wikiModel.parseTemplates("{{templ1\n"
-				+ " | a = Test1\n" + " |{{templ2|sdfsf|klj}} \n" + "}}\n" + "", false));
+				+ " | a = Test1\n" + " |b|{{templ2|sdfsf|klj}} \n" + "}}\n" + "", false));
 	}
 
 	public void testTemplateCall4() {

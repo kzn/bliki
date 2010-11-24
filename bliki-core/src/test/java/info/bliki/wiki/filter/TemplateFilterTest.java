@@ -23,7 +23,7 @@ public class TemplateFilterTest extends FilterTestSupport {
 	public void testTemplateCall3() {
 		// see method WikiTestModel#getRawWikiContent()
 		assertEquals("\n" + "<p>b) First: Test1 Second: c) First: sdfsf Second: klj </p>\n" + "", wikiModel.render("{{templ1\n"
-				+ " | a = Test1\n" + " | {{templ2|sdfsf|klj}} \n" + "}}\n" + ""));
+				+ " | a=Test1 | b\n" + " | {{templ2|sdfsf|klj}} \n" + "}}\n" + ""));
 	}
 
 	public void testSwitch001() {
@@ -43,8 +43,10 @@ public class TemplateFilterTest extends FilterTestSupport {
 
 	public void testTemplateCall2() {
 		// see method WikiTestModel#getRawWikiContent()
+		// "b) First: {{{a}}} Second: {{{2}}}"
+		// "c) First: {{{1}}} Second: {{{2}}}"
 		assertEquals("\n" + "<p>start-b) First: 3 Second: b-end start-c) First: sdfsf Second: klj-end</p>", wikiModel
-				.render("start-{{templ1|a=3|b}}-end start-{{templ2|sdfsf|klj}}-end"));
+				.render("start-{{templ1|a=3|3|b}}-end start-{{templ2|sdfsf|klj}}-end"));
 	}
 
 	public void testTemplateCall4() {
