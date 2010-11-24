@@ -914,7 +914,7 @@ public class WikipediaParser extends AbstractParser implements IParser {
 		if (fSource[fCurrentPosition] == '{') {
 			int templateStartPosition = fCurrentPosition + 1;
 			if (fSource[templateStartPosition] != '{') {
-				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fSource, templateStartPosition);
+				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fStringSource, templateStartPosition);
 				if (templateEndPosition > 0) {
 					fEventListener.onTemplate(fSource, templateStartPosition, templateEndPosition - 2);
 					return true;

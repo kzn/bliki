@@ -34,20 +34,14 @@ public class WikipediaScanner {
 	 */
 	protected final String fStringSource;
 
-	/**
-	 * The corresponding <code>char[]</code> array for the string source
-	 */
-	protected final char[] fSource;
 
 	public WikipediaScanner(String src) {
 		this(src, 0);
 	}
 
 	public WikipediaScanner(String src, int position) {
-		fSource = src.toCharArray();
 		fStringSource = src;
 		fScannerPosition = position;
-		// initialize(src, position);
 	}
 
 	public void setModel(IWikiModel wikiModel) {
@@ -81,10 +75,10 @@ public class WikipediaScanner {
 				fScannerPosition = 0;
 				logger.info("Simulating newline");
 			}
-			if (fSource[fScannerPosition++] != '{') {
+			if (fStringSource.charAt(fScannerPosition++) != '{') {
 				return null;
 			}
-			if (fSource[fScannerPosition++] != '|') {
+			if (fStringSource.charAt(fScannerPosition++) != '|') {
 				return null;
 			}
 			ArrayList<WPRow> rows = new ArrayList<WPRow>();
@@ -97,13 +91,13 @@ public class WikipediaScanner {
 			char ch = ' ';
 
 			while (true) {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				switch (ch) {
 				case '\n':
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					// ignore whitespace at the beginning of the line
 					while (ch == ' ' || ch == '\t') {
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 					}
 					switch (ch) {
 					case '|': // "\n |"
@@ -112,7 +106,7 @@ public class WikipediaScanner {
 							cell = null;
 						}
 
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 						switch (ch) {
 						case '-': // new row - "\n|-"
 							addTableRow(table, row);
@@ -153,14 +147,14 @@ public class WikipediaScanner {
 							cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition - 2);
 							cell = null;
 						}
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 						cell = new WPCell(fScannerPosition - 1);
 						cell.setType(WPCell.TH);
 						cells.add(cell);
 
 						break;
 					case '{': // "\n {"
-						if (fSource[fScannerPosition] == '|') {
+						if (fStringSource.charAt(fScannerPosition) == '|') {
 							// start of nested table?
 							fScannerPosition = indexEndOfTable();
 							break;
@@ -171,7 +165,7 @@ public class WikipediaScanner {
 					}
 					break;
 				case '|':
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					if (ch == '|') {
 						// '||' - cell separator
 						if (cell != null) {
@@ -185,7 +179,7 @@ public class WikipediaScanner {
 					}
 					break;
 				case '!':
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					if (ch == '!') {
 						// '!!' - table header
 						if (cell != null) {
@@ -210,7 +204,7 @@ public class WikipediaScanner {
 		} catch (IndexOutOfBoundsException e) {
 			logger.warn(e);
 			// ...
-			fScannerPosition = fSource.length;
+			fScannerPosition = fStringSource.length();
 			if (cell != null) {
 				cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition);
 				cell = null;
@@ -242,10 +236,10 @@ public class WikipediaScanner {
 				fScannerPosition = 0;
 			}
 			// '||' match
-			if (fSource[fScannerPosition++] != '|') {
+			if (fStringSource.charAt(fScannerPosition++) != '|') {
 				return null;
 			}
-			if (fSource[fScannerPosition++] != '|') {
+			if (fStringSource.charAt(fScannerPosition++) != '|') {
 				return null;
 			}
 			ArrayList<WPRow> rows = new ArrayList<WPRow>();
@@ -254,7 +248,7 @@ public class WikipediaScanner {
 			char ch = ' ';
 
 			while (true) {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				switch (ch) {
 				case '\n':
 					addTableRow(table, row);
@@ -262,12 +256,12 @@ public class WikipediaScanner {
 					cells = new ArrayList<WPCell>();
 					row = new WPRow(cells);
 					// '\n||' match
-					if (fSource[fScannerPosition] != '|' || fSource[fScannerPosition + 1] != '|') {
+					if (fStringSource.charAt(fScannerPosition) != '|' || fStringSource.charAt(fScannerPosition + 1) != '|') {
 						return table;
 					}
 					continue;
 				case '|':
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					// '||' match
 					if (ch == '|') {
 						if (cell != null) {
@@ -283,7 +277,7 @@ public class WikipediaScanner {
 			}
 		} catch (IndexOutOfBoundsException e) {
 			// ...
-			fScannerPosition = fSource.length;
+			fScannerPosition = fStringSource.length();
 			if (cell != null) {
 				cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition);
 				cells.add(cell);
@@ -323,7 +317,7 @@ public class WikipediaScanner {
 				fScannerPosition = 0;
 				ch = '\n';
 			} else {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 			}
 
 			list = new WPList();
@@ -351,7 +345,7 @@ public class WikipediaScanner {
 
 					int startPos;
 					while (true) {
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 						if (!Character.isWhitespace(ch)) {
 							startPos = fScannerPosition - 1;
 							listElement = new WPListElement(count, sequence, startPos);
@@ -377,7 +371,7 @@ public class WikipediaScanner {
 						list.add(listElement);
 						listElement = null;
 					}
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					switch (ch) {
 					case WPList.DL_DD_CHAR:
 					case WPList.DL_DT_CHAR:
@@ -386,18 +380,18 @@ public class WikipediaScanner {
 						count = 1;
 						lastCh = ch;
 						// count number of repetions
-						while (fSource[fScannerPosition] == WPList.UL_CHAR || fSource[fScannerPosition] == WPList.OL_CHAR
-								|| fSource[fScannerPosition] == WPList.DL_DD_CHAR || fSource[fScannerPosition] == WPList.DL_DT_CHAR) {
+						while (fStringSource.charAt(fScannerPosition) == WPList.UL_CHAR || fStringSource.charAt(fScannerPosition) == WPList.OL_CHAR
+								|| fStringSource.charAt(fScannerPosition) == WPList.DL_DD_CHAR || fStringSource.charAt(fScannerPosition) == WPList.DL_DT_CHAR) {
 							count++;
-							lastCh = fSource[fScannerPosition++];
+							lastCh = fStringSource.charAt(fScannerPosition++);
 						}
 
 						sequence = new char[count];
-						System.arraycopy(fSource, fScannerPosition - count, sequence, 0, count);
+						fStringSource.getChars(fScannerPosition - count, fScannerPosition, sequence, 0);
 
 						int startPos;
 						while (true) {
-							ch = fSource[fScannerPosition++];
+							ch = fStringSource.charAt(fScannerPosition++);
 							if (!Character.isWhitespace(ch)) {
 								startPos = fScannerPosition - 1;
 								listElement = new WPListElement(count, sequence, startPos);
@@ -428,10 +422,10 @@ public class WikipediaScanner {
 						fScannerPosition = temp;
 					}
 				}
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 			}
 		} catch (IndexOutOfBoundsException e) {
-			fScannerPosition = fSource.length + 1;
+			fScannerPosition = fStringSource.length() + 1;
 		}
 		if (list != null) {
 			if (listElement != null) {
@@ -459,7 +453,7 @@ public class WikipediaScanner {
 		// fScannerPosition = 0;
 		// ch = '\n';
 		// } else {
-		// ch = fSource[fScannerPosition++];
+		// ch = fStringSource.charAt(fScannerPosition++);
 		// }
 		//
 		// list = new WPList();
@@ -471,14 +465,14 @@ public class WikipediaScanner {
 		// list.add(listElement);
 		// listElement = null;
 		// }
-		// ch = fSource[fScannerPosition++];
+		// ch = fStringSource.charAt(fScannerPosition++);
 		// if (ch != ' ') {
 		// fScannerPosition = startPosition;
 		// return list;
 		// }
 		// int count=1;
 		// while (true) {
-		// ch = fSource[fScannerPosition++];
+		// ch = fStringSource.charAt(fScannerPosition++);
 		// if (ch != ' ') {
 		// break;
 		// }
@@ -506,7 +500,7 @@ public class WikipediaScanner {
 		//
 		// int startPos;
 		// while (true) {
-		// ch = fSource[fScannerPosition++];
+		// ch = fStringSource.charAt(fScannerPosition++);
 		// if (!Character.isWhitespace(ch)) {
 		// startPos = fScannerPosition - 1;
 		// listElement = new WPListElement(type, count, sequence, startPos);
@@ -530,10 +524,10 @@ public class WikipediaScanner {
 		// return list;
 		// }
 		// }
-		// ch = fSource[fScannerPosition++];
+		// ch = fStringSource.charAt(fScannerPosition++);
 		// }
 		// } catch (IndexOutOfBoundsException e) {
-		// fScannerPosition = fSource.length + 1;
+		// fScannerPosition = fStringSource.length() + 1;
 		// }
 		// if (list != null) {
 		// if (listElement != null) {
@@ -548,7 +542,7 @@ public class WikipediaScanner {
 
 	public int nextNewline() {
 		while (true) {
-			if (fSource[fScannerPosition++] == '\n') {
+			if (fStringSource.charAt(fScannerPosition++) == '\n') {
 				return --fScannerPosition;
 			}
 		}
@@ -558,9 +552,9 @@ public class WikipediaScanner {
 		char ch;
 		try {
 			while (true) {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				// find '-->'
-				if (ch == '-' && fSource[fScannerPosition] == '-' && fSource[fScannerPosition + 1] == '>') {
+				if (ch == '-' && fStringSource.charAt(fScannerPosition) == '-' && fStringSource.charAt(fScannerPosition + 1) == '>') {
 					return fScannerPosition + 2;
 				}
 			}
@@ -573,7 +567,7 @@ public class WikipediaScanner {
 	public int indexOf(char ch) {
 		try {
 			while (true) {
-				if (fSource[fScannerPosition++] == ch) {
+				if (fStringSource.charAt(fScannerPosition++) == ch) {
 					return fScannerPosition - 1;
 				}
 			}
@@ -587,7 +581,7 @@ public class WikipediaScanner {
 		try {
 			char c;
 			while (true) {
-				c = fSource[fScannerPosition];
+				c = fStringSource.charAt(fScannerPosition);
 				if (c == ch) {
 					return fScannerPosition;
 				}
@@ -606,11 +600,11 @@ public class WikipediaScanner {
 		char ch;
 		try {
 			while (true) {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				// find '</nowiki>
-				if (ch == '<' && fSource[fScannerPosition] == '/' && fSource[fScannerPosition + 1] == 'n'
-						&& fSource[fScannerPosition + 2] == 'o' && fSource[fScannerPosition + 3] == 'w' && fSource[fScannerPosition + 4] == 'i'
-						&& fSource[fScannerPosition + 5] == 'k' && fSource[fScannerPosition + 6] == 'i' && fSource[fScannerPosition + 7] == '>') {
+				if (ch == '<' && fStringSource.charAt(fScannerPosition) == '/' && fStringSource.charAt(fScannerPosition + 1) == 'n'
+						&& fStringSource.charAt(fScannerPosition + 2) == 'o' && fStringSource.charAt(fScannerPosition + 3) == 'w' && fStringSource.charAt(fScannerPosition + 4) == 'i'
+						&& fStringSource.charAt(fScannerPosition + 5) == 'k' && fStringSource.charAt(fScannerPosition + 6) == 'i' && fStringSource.charAt(fScannerPosition + 7) == '>') {
 					return fScannerPosition + 8;
 				}
 			}
@@ -627,37 +621,37 @@ public class WikipediaScanner {
 		char ch;
 		try {
 			while (true) {
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				// find '<!--'
-				if (ch == '<' && fSource[fScannerPosition] == '!' && fSource[fScannerPosition + 1] == '-'
-						&& fSource[fScannerPosition + 2] == '-') {
+				if (ch == '<' && fStringSource.charAt(fScannerPosition) == '!' && fStringSource.charAt(fScannerPosition + 1) == '-'
+						&& fStringSource.charAt(fScannerPosition + 2) == '-') {
 					// start of HTML comment
 					fScannerPosition = indexEndOfComment();
 					if (fScannerPosition == (-1)) {
 						return -1;
 					}
 				// find '<nowiki>'	
-				} else if (ch == '<' && fSource[fScannerPosition] == 'n' && fSource[fScannerPosition + 1] == 'o'
-						&& fSource[fScannerPosition + 2] == 'w' && fSource[fScannerPosition + 3] == 'i' && fSource[fScannerPosition + 4] == 'k'
-						&& fSource[fScannerPosition + 5] == 'i' && fSource[fScannerPosition + 6] == '>') {
+				} else if (ch == '<' && fStringSource.charAt(fScannerPosition) == 'n' && fStringSource.charAt(fScannerPosition + 1) == 'o'
+						&& fStringSource.charAt(fScannerPosition + 2) == 'w' && fStringSource.charAt(fScannerPosition + 3) == 'i' && fStringSource.charAt(fScannerPosition + 4) == 'k'
+						&& fStringSource.charAt(fScannerPosition + 5) == 'i' && fStringSource.charAt(fScannerPosition + 6) == '>') {
 					// <nowiki>
 					fScannerPosition = indexEndOfNowiki();
 					if (fScannerPosition == (-1)) {
 						return -1;
 					}
 				// find '\n{|'
-				} else if (ch == '\n' && fSource[fScannerPosition] == '{' && fSource[fScannerPosition + 1] == '|') {
+				} else if (ch == '\n' && fStringSource.charAt(fScannerPosition) == '{' && fStringSource.charAt(fScannerPosition + 1) == '|') {
 					// assume nested table
 					count++;
 				} else if (ch == '\n') {
 					oldPosition = fScannerPosition;
-					ch = fSource[fScannerPosition++];
+					ch = fStringSource.charAt(fScannerPosition++);
 					// ignore SPACES and TABs at the beginning of the line
 					while (ch == ' ' || ch == '\t') {
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 					}
 					// find '|}'
-					if (ch == '|' && fSource[fScannerPosition] == '}') {
+					if (ch == '|' && fStringSource.charAt(fScannerPosition) == '}') {
 						count--;
 						if (count == 0) {
 							return fScannerPosition + 1;
@@ -680,7 +674,7 @@ public class WikipediaScanner {
 	public int indexOfAttributes() {
 		try {
 			// int start = fScannerPosition;
-			char ch = fSource[fScannerPosition];
+			char ch = fStringSource.charAt(fScannerPosition);
 			while (true) {
 				// TODO scan for NOWIKI and HTML comments
 
@@ -689,41 +683,41 @@ public class WikipediaScanner {
 					int countBrackets = 1;
 					fScannerPosition++;
 					while (countBrackets > 0) {
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 						if (ch == '[') {
 							++countBrackets;
 						} else if (ch == ']') {
 							--countBrackets;
 						}
 					}
-					ch = fSource[fScannerPosition];
+					ch = fStringSource.charAt(fScannerPosition);
 					continue;
 				} else if (ch == '{') {
 					// scan/skip for Wiki templates, which could contain '|' character
 					int countCurlyBrackets = 1;
 					fScannerPosition++;
 					while (countCurlyBrackets > 0) {
-						ch = fSource[fScannerPosition++];
+						ch = fStringSource.charAt(fScannerPosition++);
 						if (ch == '{') {
 							++countCurlyBrackets;
 						} else if (ch == '}') {
 							--countCurlyBrackets;
 						}
 					}
-					ch = fSource[fScannerPosition];
+					ch = fStringSource.charAt(fScannerPosition);
 					continue;
 				}
 				if (ch == '|') {
 					// don't allow '||'
-					if (fSource[fScannerPosition + 1] == '|') {
+					if (fStringSource.charAt(fScannerPosition + 1) == '|') {
 						return -1;
 					}
 					return fScannerPosition;
 				}
-				if (fSource[fScannerPosition] == '\n') {
+				if (fStringSource.charAt(fScannerPosition) == '\n') {
 					return -1;
 				}
-				ch = fSource[++fScannerPosition];
+				ch = fStringSource.charAt(++fScannerPosition);
 			}
 		} catch (IndexOutOfBoundsException e) {
 			// ..
@@ -761,7 +755,7 @@ public class WikipediaScanner {
 	}
 
 	public void scanWhiteSpace() {
-		while (Character.isWhitespace(fSource[fScannerPosition++])) {
+		while (Character.isWhitespace(fStringSource.charAt(fScannerPosition++))) {
 		}
 		--fScannerPosition;
 	}
@@ -784,18 +778,18 @@ public class WikipediaScanner {
 			char ch;
 			int parameterStart = -1;
 			StringBuilder recursiveResult;
-			while (fScannerPosition < fSource.length) {
-				ch = fSource[fScannerPosition++];
+			while (fScannerPosition < fStringSource.length()) {
+				ch = fStringSource.charAt(fScannerPosition++);
 				// find for '{{{[^{]'
-				if (ch == '{' && fSource[fScannerPosition] == '{' && fSource[fScannerPosition + 1] == '{'
-						&& fSource[fScannerPosition + 2] != '{') {
+				if (ch == '{' && fStringSource.charAt(fScannerPosition) == '{' && fStringSource.charAt(fScannerPosition + 1) == '{'
+						&& fStringSource.charAt(fScannerPosition + 2) != '{') {
 					fScannerPosition += 2;
 					parameterStart = fScannerPosition;
 
-					int temp[] = findNestedParamEnd(fSource, parameterStart);
+					int temp[] = findNestedParamEnd(fStringSource, parameterStart);
 					if (temp[0] >= 0) {
 						fScannerPosition = temp[0];
-						List<String> list = splitByPipe(fSource, parameterStart, fScannerPosition - 3, null);
+						List<String> list = splitByPipe(fStringSource, parameterStart, fScannerPosition - 3, null);
 						if (list.size() > 0) {
 							String parameterString = list.get(0);
 							String value = null;
@@ -811,7 +805,8 @@ public class WikipediaScanner {
 										buffer = new StringBuilder(template.length() + 128);
 									}
 									if (bufferStart < fScannerPosition) {
-										buffer.append(fSource, bufferStart, parameterStart - bufferStart - 3);
+										//buffer.append(fSource, bufferStart, parameterStart - bufferStart - 3);
+										buffer.append(fStringSource, bufferStart, parameterStart - 3);
 									}
 
 									WikipediaScanner scanner = new WikipediaScanner(value);
@@ -836,7 +831,7 @@ public class WikipediaScanner {
 					return buffer;
 				}
 			}
-			if(fScannerPosition == fSource.length)
+			if(fScannerPosition == fStringSource.length())
 				fScannerPosition++;
 		} catch (IndexOutOfBoundsException e) {
 			// ignore
@@ -844,7 +839,7 @@ public class WikipediaScanner {
 			fWikiModel.decrementRecursionLevel();
 		}
 		if (buffer != null && bufferStart < fScannerPosition) {
-			buffer.append(fSource, bufferStart, fScannerPosition - bufferStart - 1);
+			buffer.append(fStringSource, bufferStart, fScannerPosition - 1);//buffer.append(fSource, bufferStart, fScannerPosition - bufferStart - 1);
 		}
 		return buffer;
 	}
@@ -859,7 +854,7 @@ public class WikipediaScanner {
 	 */
 	public static List<String> splitByPipe(String sourceString, List<String> resultList) {
 		// TODO optimize this to avoid new char[] generation inside toCharArray() ?
-		return splitByPipe(sourceString.toCharArray(), 0, sourceString.length(), resultList);
+		return splitByPipe(sourceString, 0, sourceString.length(), resultList);
 	}
 
 	/**
@@ -872,7 +867,7 @@ public class WikipediaScanner {
 	 *          the list which contains the splitted strings
 	 * @return
 	 */
-	public static List<String> splitByPipe(char[] srcArray, int currOffset, int endOffset, List<String> resultList) {
+	public static List<String> splitByPipe(String srcArray, int currOffset, int endOffset, List<String> resultList) {
 		if (resultList == null) {
 			resultList = new ArrayList<String>();
 		}
@@ -883,18 +878,18 @@ public class WikipediaScanner {
 		int lastOffset = currOffset;
 		try {
 			while (currOffset < endOffset) {
-				ch = srcArray[currOffset++];
+				ch = srcArray.charAt(currOffset++);
 				// match '[['
-				if (ch == '[' && srcArray[currOffset] == '[') {
+				if (ch == '[' && srcArray.charAt(currOffset) == '[') {
 					currOffset++;
 					temp[0] = findNestedEnd(srcArray, '[', ']', currOffset);
 					if (temp[0] >= 0) {
 						currOffset = temp[0];
 					}
 				// match '{{'
-				} else if (ch == '{' && srcArray[currOffset] == '{') {
+				} else if (ch == '{' && srcArray.charAt(currOffset) == '{') {
 					currOffset++;
-					if (srcArray[currOffset] == '{' && srcArray[currOffset + 1] != '{') {
+					if (srcArray.charAt(currOffset) == '{' && srcArray.charAt(currOffset + 1) != '{') {
 						currOffset++;
 						temp = findNestedParamEnd(srcArray, currOffset);
 						if (temp[0] >= 0) {
@@ -907,20 +902,20 @@ public class WikipediaScanner {
 						}
 					}
 				} else if (ch == '|') {
-					value = Utils.trimNewlineRight(new String(srcArray, lastOffset, currOffset - lastOffset - 1));
+					value = Utils.trimNewlineRight(srcArray.substring(lastOffset, currOffset - 1));
 					resultList.add(value);
 					lastOffset = currOffset;
 				}
 			}
 
 			if (currOffset > lastOffset) {
-				resultList.add(Utils.trimNewlineRight(new String(srcArray, lastOffset, currOffset - lastOffset)));
+				resultList.add(Utils.trimNewlineRight(srcArray.substring(lastOffset, currOffset)));
 			} else if (currOffset == lastOffset) {
 				resultList.add("");
 			}
 		} catch (IndexOutOfBoundsException e) {
 			if (currOffset > lastOffset) {
-				resultList.add(Utils.trimNewlineRight(new String(srcArray, lastOffset, currOffset - lastOffset)));
+				resultList.add(Utils.trimNewlineRight(srcArray.substring(lastOffset, currOffset)));
 			} else if (currOffset == lastOffset) {
 				resultList.add("");
 			}
@@ -928,17 +923,17 @@ public class WikipediaScanner {
 		return resultList;
 	}
 
-	public static final int findNestedEnd(final char[] sourceArray, final char startCh, final char endChar, int startPosition) {
+	public static final int findNestedEnd(final String sourceArray, final char startCh, final char endChar, int startPosition) {
 		char ch;
 		int level = 1;
 		int position = startPosition;
 		try {
 			while (true) {
-				ch = sourceArray[position++];
-				if (ch == startCh && sourceArray[position] == startCh) {
+				ch = sourceArray.charAt(position++);
+				if (ch == startCh && sourceArray.charAt(position) == startCh) {
 					position++;
 					level++;
-				} else if (ch == endChar && sourceArray[position] == endChar) {
+				} else if (ch == endChar && sourceArray.charAt(position) == endChar) {
 					position++;
 					if (--level == 0) {
 						break;
@@ -951,22 +946,22 @@ public class WikipediaScanner {
 		}
 	}
 
-	public static final int findNestedTemplateEnd(final char[] sourceArray, int startPosition) {
+	public static final int findNestedTemplateEnd(final String sourceArray, int startPosition) {
 		// return -1 if not found
 		//char ch;
 		// int len = sourceArray.length;
 		int countSingleOpenBraces = 0;
 		int position = startPosition;
 		try {
-			while (position < sourceArray.length) { 
-				switch(sourceArray[position++]) {
+			while (position < sourceArray.length()) { 
+				switch(sourceArray.charAt(position++)) {
 					case '{':
 						countSingleOpenBraces++;
 						break;
 					case '}':
 						if(countSingleOpenBraces > 0)
 							countSingleOpenBraces--;
-						else if(sourceArray[position] == '}')
+						else if(sourceArray.charAt(position) == '}')
 							return ++position;
 						break;
 				}
@@ -992,20 +987,20 @@ public class WikipediaScanner {
 
 	}
 
-	public static final int[] findNestedParamEnd(final char[] sourceArray, int startPosition) {
+	public static final int[] findNestedParamEnd(final String sourceArray, int startPosition) {
 		char ch;
-		int len = sourceArray.length;
+		int len = sourceArray.length();
 		int countSingleOpenBraces = 0;
 		int parameterPosition = startPosition;
 		// int templatePosition = -1;
 		// int[] result = new int[] { -1, -1 };
 		try {
 			while (true) {
-				ch = sourceArray[parameterPosition++];
+				ch = sourceArray.charAt(parameterPosition++);
 				if (ch == '{') {
-					if (sourceArray[parameterPosition] == '{') {
+					if (sourceArray.charAt(parameterPosition) == '{') {
 						parameterPosition++;
-						if ((len > parameterPosition) && sourceArray[parameterPosition] == '{' && sourceArray[parameterPosition + 1] != '{') {
+						if ((len > parameterPosition) && sourceArray.charAt(parameterPosition) == '{' && sourceArray.charAt(parameterPosition + 1) != '{') {
 							// template parameter beginning
 							parameterPosition++;
 							int[] temp = findNestedParamEnd(sourceArray, parameterPosition);
@@ -1043,8 +1038,8 @@ public class WikipediaScanner {
 					if (countSingleOpenBraces > 0) {
 						countSingleOpenBraces--;
 					} else {
-						if (sourceArray[parameterPosition] == '}') {
-							if (sourceArray[parameterPosition + 1] == '}') {
+						if (sourceArray.charAt(parameterPosition) == '}') {
+							if (sourceArray.charAt(parameterPosition + 1) == '}') {
 								// template parameter ending
 								return new int[] { parameterPosition + 2, -1 };
 							} else {
@@ -1254,7 +1249,7 @@ public class WikipediaScanner {
 		try {
 			while (!done) {
 				bookmarks[state + 1] = fScannerPosition;
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				switch (state) {
 				case 0: // outside of any attribute
 					if ((EOF == ch) || ('>' == ch) || ('<' == ch)) {
@@ -1315,7 +1310,7 @@ public class WikipediaScanner {
 						naked(attributes, bookmarks);
 						bookmarks[0] = bookmarks[4];
 						state = 0;
-					} else if (ch == '/' && fSource[fScannerPosition] == '>') {
+					} else if (ch == '/' && fStringSource.charAt(fScannerPosition) == '>') {
 						naked(attributes, bookmarks);
 						bookmarks[0] = bookmarks[4];
 						fScannerPosition--;
@@ -1336,7 +1331,7 @@ public class WikipediaScanner {
 					if (EOF == ch) {
 						double_quote(attributes, bookmarks);
 						done = true; // complain?
-						// } else if ('\\' == ch && fSource[fScannerPosition] == '"') {
+						// } else if ('\\' == ch && fStringSource.charAt(fScannerPosition) == '"') {
 						// fScannerPosition++;
 					} else if ('"' == ch) {
 						double_quote(attributes, bookmarks);
@@ -1407,7 +1402,7 @@ public class WikipediaScanner {
 		try {
 			while (!done && fScannerPosition < end) {
 				bookmarks[state + 1] = fScannerPosition;
-				ch = fSource[fScannerPosition++];
+				ch = fStringSource.charAt(fScannerPosition++);
 				switch (state) {
 				case 0: // outside of any attribute
 					if ((EOF == ch) || ('>' == ch) || ('<' == ch)) {
@@ -1484,7 +1479,7 @@ public class WikipediaScanner {
 					if (EOF == ch) {
 						double_quote(attributes, bookmarks);
 						done = true; // complain?
-						// } else if ('\\' == ch && fSource[fScannerPosition] == '"') {
+						// } else if ('\\' == ch && fStringSource.charAt(fScannerPosition) == '"') {
 						// fScannerPosition++;
 					} else if ('"' == ch) {
 						double_quote(attributes, bookmarks);
@@ -1645,7 +1640,7 @@ public class WikipediaScanner {
 
 	protected int readSpecialWikiTags(int start) {
 		try {
-			if (fSource[start] != '/') {
+			if (fStringSource.charAt(start) != '/') {
 				// starting tag
 				WikiTagNode tagNode = parseTag(start);
 				if (tagNode != null) {
@@ -1704,13 +1699,13 @@ public class WikipediaScanner {
 	protected int indexOfUntilNoLetter(char testChar, int fromIndex) {
 		int index = fromIndex;
 		char ch;
-		while (index < fSource.length) {
-			ch = fSource[index++];
+		while (index < fStringSource.length()) {
+			ch = fStringSource.charAt(index++);
 			if (ch == testChar) {
 				return index - 1;
 			}
 			if (Character.isLetter(ch)) {
-				if (fSource.length <= index) {
+				if (fStringSource.length() <= index) {
 					return -1;
 				}
 				continue;

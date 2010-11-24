@@ -510,7 +510,7 @@ public class TemplateParser extends AbstractParser {
 			int startTemplatePosition = ++fCurrentPosition;
 			if (fSource[fCurrentPosition] == '{' && fSource[fCurrentPosition + 1] != '{') {
 				// parse template parameters
-				int[] templateEndPosition = WikipediaScanner.findNestedParamEnd(fSource, fCurrentPosition + 1);
+				int[] templateEndPosition = WikipediaScanner.findNestedParamEnd(fStringSource, fCurrentPosition + 1);
 				if (templateEndPosition[0] < 0) {
 					if (templateEndPosition[1] < 0) {
 						--fCurrentPosition;
@@ -523,7 +523,7 @@ public class TemplateParser extends AbstractParser {
 					return parseTemplateParameter(writer, startTemplatePosition, templateEndPosition[0]);
 				}
 			} else {
-				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fSource, fCurrentPosition);
+				int templateEndPosition = WikipediaScanner.findNestedTemplateEnd(fStringSource, fCurrentPosition);
 				if (templateEndPosition < 0) {
 					fCurrentPosition--;
 				} else {
@@ -559,7 +559,7 @@ public class TemplateParser extends AbstractParser {
 		int endPosition = fCurrentPosition;
 		String plainContent = null;
 		int endOffset = fCurrentPosition - 2;
-		Object[] objs = createParameterMap(fSource, startTemplatePosition, fCurrentPosition - startTemplatePosition - 2);
+		Object[] objs = createParameterMap(fStringSource, startTemplatePosition, fCurrentPosition - startTemplatePosition - 2);
 		List<String> parts = (List<String>) objs[0];
 		String templateName = ((String) objs[1]).trim();
 		StringBuilder buf = new StringBuilder((templateName.length()) + (templateName.length() / 10));
@@ -645,7 +645,7 @@ public class TemplateParser extends AbstractParser {
 	 *         the template name at index [1]
 	 * 
 	 */
-	private static Object[] createParameterMap(char[] src, int startOffset, int len) {
+	private static Object[] createParameterMap(String src, int startOffset, int len) {
 		Object[] objs = new Object[2];
 		int currOffset = startOffset;
 		int endOffset = startOffset + len;
@@ -654,7 +654,7 @@ public class TemplateParser extends AbstractParser {
 		resultList = WikipediaScanner.splitByPipe(src, currOffset, endOffset, resultList);
 		if (resultList.size() <= 1) {
 			// set the template name
-			objs[1] = new String(src, startOffset, len);
+			objs[1] = src.subSequence(startOffset, startOffset + len);//new String(src, startOffset, len);
 		} else {
 			objs[1] = resultList.get(0);
 		}
@@ -683,7 +683,7 @@ public class TemplateParser extends AbstractParser {
 				ch = src[currOffset++];
 				if (ch == '[' && src[currOffset] == '[') {
 					currOffset++;
-					temp[0] = WikipediaScanner.findNestedEnd(src, '[', ']', currOffset);
+					temp[0] = WikipediaScanner.findNestedEnd(srcString, '[', ']', currOffset);
 					if (temp[0] >= 0) {
 						currOffset = temp[0];
 					}
@@ -691,18 +691,18 @@ public class TemplateParser extends AbstractParser {
 					currOffset++;
 					if (src[currOffset] == '{' && src[currOffset + 1] != '{') {
 						currOffset++;
-						temp = WikipediaScanner.findNestedParamEnd(src, currOffset);
+						temp = WikipediaScanner.findNestedParamEnd(srcString, currOffset);
 						if (temp[0] >= 0) {
 							currOffset = temp[0];
 						} else {
 							currOffset--;
-							temp[0] = WikipediaScanner.findNestedTemplateEnd(src, currOffset);
+							temp[0] = WikipediaScanner.findNestedTemplateEnd(srcString, currOffset);
 							if (temp[0] >= 0) {
 								currOffset = temp[0];
 							}
 						}
 					} else {
-						temp[0] = WikipediaScanner.findNestedTemplateEnd(src, currOffset);
+						temp[0] = WikipediaScanner.findNestedTemplateEnd(srcString, currOffset);
 						if (temp[0] >= 0) {
 							currOffset = temp[0];
 						}
