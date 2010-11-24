@@ -2,6 +2,8 @@ package info.bliki.wiki.template;
 
 import info.bliki.wiki.model.IWikiModel;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,8 +26,17 @@ public class Time extends AbstractTemplateFunction {
 	public String parseFunction(List<String> list, IWikiModel model, char[] src, int beginIndex, int endIndex) {
 		if (list.size() > 0) {
 			String condition = parse(list.get(0), model);
+			Date d = new Date();
 			if (condition.equals("U")) {
 				return secondsSinceJanuary1970(list);
+			}
+			
+			if(condition.equals("F")) {
+				return "Month";
+			}
+			
+			if(condition.equals("N")) {
+				return String.valueOf(d.getDay());
 			}
 		}
 		return null;
