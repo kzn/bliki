@@ -452,20 +452,6 @@ public class WikipediaScanner {
 		return idx > 0? idx + 3 : -1;
 	}
 
-	public int indexOf(char ch, char stop) {
-			while (fScannerPosition < fStringSource.length()) {
-				char c = fStringSource.charAt(fScannerPosition);
-				if (c == ch) {
-					return fScannerPosition;
-				}
-				if (c == stop) {
-					return -1;
-				}
-				fScannerPosition++;
-			}
-		return -1;
-	}
-
 	public int indexEndOfNowiki() {
 		int idx = fStringSource.indexOf("</nowiki>", fScannerPosition);
 		fScannerPosition = idx > 0? idx + 2 : fStringSource.length() + 1;
