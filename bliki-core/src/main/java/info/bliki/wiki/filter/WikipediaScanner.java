@@ -1551,14 +1551,12 @@ public class WikipediaScanner {
 	protected WikiTagNode makeTag(int start, int end, ArrayList<NodeAttribute> attributes) {
 		int length;
 		length = end - start;
-		if (0 != length) { // return tag based on second character, '/', '%',
+		if (length != 0) { // return tag based on second character, '/', '%',
 			// Letter (ch), '!'
-			if (2 > length) {
+			if (length < 2) {
 				// this is an error
 				return null; // (makeString(start, end));
 			}
-			// ret = getNodeFactory().createTagNode(this.getPage(), start, end,
-			// attributes);
 			return new WikiTagNode(start, end, attributes);
 		}
 		return null;
