@@ -97,18 +97,20 @@ public abstract class AbstractParser  {
 	 */
 	protected final boolean readUntilCharOrStopAtEOL(char testedChar) {
 		int temp = fCurrentPosition;
-		try {
-			char ch;
-			while ((ch = fStringSource.charAt(fCurrentPosition++)) != testedChar) {
-				if (ch == '\n' || ch == '\r') {
-					return false;
-				}
+		
+		for(; fCurrentPosition < fStringSource.length(); fCurrentPosition++) {
+			char ch = fStringSource.charAt(fCurrentPosition);
+			if(ch == testedChar) {
+				fCurrentPosition++;
+				return true;
+			} else if(ch == '\n' || ch == '\r') {
+				fCurrentPosition++;
+				return false;
 			}
-			return true;
-		} catch (IndexOutOfBoundsException e) {
-			fCurrentPosition = temp;
-			return false;
 		}
+		
+		fCurrentPosition = temp;
+		return false;
 	}
 
 	/**
