@@ -1683,6 +1683,14 @@ public class WikipediaScanner {
 		
 		return -1;
 	}
+	
+	protected boolean matchCurrent(int pos, char ch) {
+		return Util.matchCurrent(fStringSource, pos, ch);
+	}
+	
+	protected boolean matchNext(int pos, char ch) {
+		return Util.matchNext(fStringSource, pos, ch);
+	}
 
 	// protected final int readUntilIgnoreCase(Object processed, int start, String
 	// startString, String endString) {
