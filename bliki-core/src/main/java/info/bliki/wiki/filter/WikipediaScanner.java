@@ -924,26 +924,22 @@ public class WikipediaScanner {
 	}
 
 	public static final int findNestedEnd(final String sourceArray, final char startCh, final char endChar, int startPosition) {
-		char ch;
 		int level = 1;
 		int position = startPosition;
-		try {
-			while (true) {
-				ch = sourceArray.charAt(position++);
-				if (ch == startCh && sourceArray.charAt(position) == startCh) {
-					position++;
-					level++;
-				} else if (ch == endChar && sourceArray.charAt(position) == endChar) {
-					position++;
-					if (--level == 0) {
-						break;
-					}
-				}
+		while (position < sourceArray.length()) {
+			if(Util.matchCurrent(sourceArray, position, startCh) && Util.matchNext(sourceArray, position, startCh)) {
+				position += 2;
+				level++;
+			} else if(Util.matchCurrent(sourceArray, position, endChar) && Util.matchNext(sourceArray, position, endChar)) {
+				position += 2;
+				if(--level == 0)
+					return position;
 			}
-			return position;
-		} catch (IndexOutOfBoundsException e) {
-			return -1;
+			position++;
 		}
+
+		return -1;
+
 	}
 
 	public static final int findNestedTemplateEnd(final String sourceArray, int startPosition) {
