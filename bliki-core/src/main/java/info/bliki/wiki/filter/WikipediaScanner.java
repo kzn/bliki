@@ -449,39 +449,22 @@ public class WikipediaScanner {
 	}
 
 	public int indexEndOfComment() {
-		char ch;
-		try {
-			while (true) {
-				ch = fStringSource.charAt(fScannerPosition++);
-				// find '-->'
-				if (ch == '-' && fStringSource.charAt(fScannerPosition) == '-' && fStringSource.charAt(fScannerPosition + 1) == '>') {
-					return fScannerPosition + 2;
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			// ..
-		}
-		return -1;
+		int idx = fStringSource.indexOf("-->", fScannerPosition);
+		fScannerPosition = idx > 0? idx + 1: fStringSource.length() + 1;
+		
+		return idx > 0? fScannerPosition + 2 : -1;
 	}
 
 	public int indexOf(char ch) {
-		try {
-			while (true) {
-				if (fStringSource.charAt(fScannerPosition++) == ch) {
-					return fScannerPosition - 1;
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			// ..
-		}
-		return -1;
+		int idx = fStringSource.indexOf(ch, fScannerPosition);
+		fScannerPosition = idx > 0? idx : fStringSource.length() + 1;
+		
+		return idx;
 	}
 
 	public int indexOf(char ch, char stop) {
-		try {
-			char c;
-			while (true) {
-				c = fStringSource.charAt(fScannerPosition);
+			while (fScannerPosition < fStringSource.length()) {
+				char c = fStringSource.charAt(fScannerPosition);
 				if (c == ch) {
 					return fScannerPosition;
 				}
@@ -490,28 +473,14 @@ public class WikipediaScanner {
 				}
 				fScannerPosition++;
 			}
-		} catch (IndexOutOfBoundsException e) {
-			// ..
-		}
 		return -1;
 	}
 
 	public int indexEndOfNowiki() {
-		char ch;
-		try {
-			while (true) {
-				ch = fStringSource.charAt(fScannerPosition++);
-				// find '</nowiki>
-				if (ch == '<' && fStringSource.charAt(fScannerPosition) == '/' && fStringSource.charAt(fScannerPosition + 1) == 'n'
-						&& fStringSource.charAt(fScannerPosition + 2) == 'o' && fStringSource.charAt(fScannerPosition + 3) == 'w' && fStringSource.charAt(fScannerPosition + 4) == 'i'
-						&& fStringSource.charAt(fScannerPosition + 5) == 'k' && fStringSource.charAt(fScannerPosition + 6) == 'i' && fStringSource.charAt(fScannerPosition + 7) == '>') {
-					return fScannerPosition + 8;
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			// ..
-		}
-		return -1;
+		int idx = fStringSource.indexOf("</nowiki>", fScannerPosition);
+		fScannerPosition = idx > 0? idx + 2 : fStringSource.length() + 1;
+		
+		return idx > 0? idx + 9 : -1;
 	}
 
 	public int indexEndOfTable() {
