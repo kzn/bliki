@@ -388,6 +388,61 @@ public class WPTableFilterTest extends FilterTestSupport {
 				+ " class=\"location-none\" width=\"140\" />\n</a></div>\n</td>" + "</tr></table></div>\n";
 		assertEquals(expected, wikiModel.render(raw));
 	}
+	
+	public void testEndTableComment() {
+		String src = "{|\n" +
+				"| col\n" +
+				"<!-- end\n" +
+				"|}\n" +
+				"-->\n" +
+				"| col1\n" +
+				"|}\n";
+		String res = "\n<div style=\"page-break-inside: avoid;\">\n" +
+		"<table>\n" + 
+		"<tr>\n" + "<td>col</td>\n" +
+		"<td>col1</td></tr></table></div>\n";
+		
+		
+		assertEquals(res, wikiModel.render(src));
+	}
+	
+
+	public void endTableTest(String src) {
+		WikipediaScanner s = new WikipediaScanner(src);
+		s.setPosition(2);
+		assertEquals(src.length() - 1, s.indexEndOfTable());
+
+	}
+
+	
+	public void testFindEndTableComment() {
+		endTableTest("{|\n" + "| col\n" + "<!-- end\n" + "|}\n" + "-->\n" +	"| col1\n" + "|} ");
+	}
+	
+	
+	public void testFindEndTableNowiki() {
+		endTableTest("{|\n| col\n| col2 <nowiki>\n|}\n</nowiki>\n|- \n| a \n| b\n|} ");
+	}
+	
+	public void testFindEndTableMisc() {
+		endTableTest("{|d\n{|\n|}\n|} ");
+		endTableTest("{|  {|d\n   {|\n   |}\n  |} ");
+	}
+
+
+	
+	public void testEndTableWiki() {
+		String src = "{|\n| col\n| col2 <nowiki>\n|}\n</nowiki>\n|- \n| a \n| b\n|}";
+			
+		String res = "\n<div style=\"page-break-inside: avoid;\">\n" +
+		"<table>\n" + 
+		"<tr>\n" + "<td>col</td>\n" +
+		"<td>col1</td></tr></table></div>\n";
+		
+		
+		//assertEquals(res, wikiModel.render(src));
+	}
+
 
 	// public void testWPTable02() {
 	// String WIKIPEDIA =
