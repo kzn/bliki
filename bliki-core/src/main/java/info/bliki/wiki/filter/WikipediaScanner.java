@@ -478,23 +478,23 @@ public class WikipediaScanner {
 		int pos = fScannerPosition;
 
 		try {
-			while (true) {
-				char ch = fStringSource.charAt(pos++);
+			while (pos < fStringSource.length()) {
+				char ch = fStringSource.charAt(pos);
 				// find '<!--'
-				if (matchCurrent(pos - 1, "<!--")) {
+				if (matchCurrent(pos, "<!--")) {
 					// start of HTML comment
 					pos = indexEndOfComment();
 					if (pos == (-1)) {
 						return -1;
 					}
-				} else if (matchCurrent(pos - 1, "<nowiki>")) {
+				} else if (matchCurrent(pos, "<nowiki>")) {
 					pos = indexEndOfNowiki();
 					if (pos == (-1)) {
 						return -1;
 					}
 				}  else if (ch == '\n') {
 					int oldPosition = pos;
-					pos = skipSpaces(fStringSource, pos);
+					pos = skipSpaces(fStringSource, pos + 1);
 					if(pos < 0)
 						return -1;
 
@@ -512,7 +512,10 @@ public class WikipediaScanner {
 					}
 					pos = oldPosition;
 				}
+				pos++;
 			}
+			
+			return -1;
 		} catch (IndexOutOfBoundsException e) {
 			// ..
 		}
