@@ -443,11 +443,9 @@ public class WikipediaScanner {
 	}
 
 	public int nextNewline() {
-		while (true) {
-			if (fStringSource.charAt(fScannerPosition++) == '\n') {
-				return --fScannerPosition;
-			}
-		}
+		int idx = fStringSource.indexOf('\n', fScannerPosition);
+		fScannerPosition = idx > 0? idx : fStringSource.length() + 1;
+		return idx;
 	}
 
 	public int indexEndOfComment() {
