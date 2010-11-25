@@ -974,6 +974,7 @@ public class WikipediaScanner {
 		// int[] result = new int[] { -1, -1 };
 		try {
 			while (true) {
+				
 				ch = sourceArray.charAt(parameterPosition++);
 				if (ch == '{') {
 					if (sourceArray.charAt(parameterPosition) == '{') {
@@ -991,16 +992,6 @@ public class WikipediaScanner {
 									return new int[] { -1, -1 };
 								}
 							}
-							// if (temp[0] < 0) {
-							// // return -1;
-							// parameterPosition--;
-							// temp[0] = findNestedTemplateEnd(sourceArray,
-							// parameterPosition);
-							// if (temp[0] < 0) {
-							// return new int[] { -1, -1 };
-							// }
-							// }
-							// parameterPosition = temp[0];
 						} else {
 							// template beginning
 							int temp = findNestedTemplateEnd(sourceArray, parameterPosition);
