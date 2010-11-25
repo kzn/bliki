@@ -36,6 +36,7 @@ public class WikipediaScannerTest extends TestCase {
 	public void testIndexEndComment() throws Exception {
 		WikipediaScanner s = makeScanner("this --> test");
 		assertEquals(8, s.indexEndOfComment());
+		s.setPosition(8);
 		assertEquals(-1, s.indexEndOfComment());
 	}
 
