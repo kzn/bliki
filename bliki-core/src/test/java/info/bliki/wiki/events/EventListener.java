@@ -8,13 +8,14 @@ public class EventListener  extends DefaultEventListener {
 	public EventListener() {
 
 	}
-
-	public void onHeader(char[] src, int startPosition, int endPosition, int rawStart, int rawEnd, int level) {
-		collectorBuffer.append(src, startPosition, endPosition - startPosition);
+	@Override
+	public void onHeader(String src, int startPosition, int endPosition, int rawStart, int rawEnd, int level) {
+		collectorBuffer.append(src, startPosition, endPosition);
 		collectorBuffer.append("\n");
 	}
 
-	public void onWikiLink(char[] src, int rawStart, int rawEnd, String suffix) {
+	@Override
+	public void onWikiLink(String src, int rawStart, int rawEnd, String suffix) {
 	}
 
 	public StringBuffer getCollectorBuffer() {
