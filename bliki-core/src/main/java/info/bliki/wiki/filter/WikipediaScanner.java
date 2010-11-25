@@ -949,25 +949,20 @@ public class WikipediaScanner {
 	public static final int findNestedTemplateEnd(final String sourceArray, int startPosition) {
 		int countSingleOpenBraces = 0;
 		int position = startPosition;
-		try {
-			while (position < sourceArray.length()) { 
-				switch(sourceArray.charAt(position++)) {
-					case '{':
-						countSingleOpenBraces++;
-						break;
-					case '}':
-						if(countSingleOpenBraces > 0)
-							countSingleOpenBraces--;
-						else if(Util.matchCurrent(sourceArray, position, '}'))
-							return ++position;
-						break;
-				}
+		while (position < sourceArray.length()) { 
+			switch(sourceArray.charAt(position++)) {
+			case '{':
+				countSingleOpenBraces++;
+				break;
+			case '}':
+				if(countSingleOpenBraces > 0)
+					countSingleOpenBraces--;
+				else if(Util.matchCurrent(sourceArray, position, '}'))
+					return ++position;
+				break;
 			}
-			return -1;
-		} catch (IndexOutOfBoundsException e) {
-			return -1;
 		}
-
+		return -1;
 	}
 
 	public static final int[] findNestedParamEnd(final String sourceArray, int startPosition) {
