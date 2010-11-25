@@ -947,9 +947,6 @@ public class WikipediaScanner {
 	}
 
 	public static final int findNestedTemplateEnd(final String sourceArray, int startPosition) {
-		// return -1 if not found
-		//char ch;
-		// int len = sourceArray.length;
 		int countSingleOpenBraces = 0;
 		int position = startPosition;
 		try {
@@ -961,24 +958,10 @@ public class WikipediaScanner {
 					case '}':
 						if(countSingleOpenBraces > 0)
 							countSingleOpenBraces--;
-						else if(sourceArray.charAt(position) == '}')
+						else if(Util.matchCurrent(sourceArray, position, '}'))
 							return ++position;
 						break;
 				}
-/*				char ch = sourceArray[position++];
-				if (ch == '{') {
-					countSingleOpenBraces++;
-				} else if (ch == '}') {
-					if (countSingleOpenBraces > 0) {
-						countSingleOpenBraces--;
-					} else {
-						if (sourceArray[position] == '}') {
-							// template ending
-							position++;
-							break;
-						}
-					}
-				}*/
 			}
 			return -1;
 		} catch (IndexOutOfBoundsException e) {

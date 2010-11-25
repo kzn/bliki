@@ -98,5 +98,21 @@ public class Util {
 
 		return -1;
 	}
+	
+	
+	public static boolean matchCurrent(String src, int pos, char ch) {
+		return pos < src.length()? src.charAt(pos) == ch : false;
+	}
+	
+	/**
+	 * Safe way to match next position for char 
+	 * @param src
+	 * @param pos
+	 * @param ch
+	 * @return
+	 */
+	public static boolean matchNext(String src, int pos, char ch) {
+		return matchCurrent(src, pos + 1, ch);
+	}
 
 }
