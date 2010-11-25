@@ -1549,17 +1549,8 @@ public class WikipediaScanner {
 	 * @return The new Tag node.
 	 */
 	protected WikiTagNode makeTag(int start, int end, ArrayList<NodeAttribute> attributes) {
-		int length;
-		length = end - start;
-		if (length != 0) { // return tag based on second character, '/', '%',
-			// Letter (ch), '!'
-			if (length < 2) {
-				// this is an error
-				return null; // (makeString(start, end));
-			}
-			return new WikiTagNode(start, end, attributes);
-		}
-		return null;
+		return end - start > 1? new WikiTagNode(start, end, attributes) : null;
+
 	}
 
 	/**
