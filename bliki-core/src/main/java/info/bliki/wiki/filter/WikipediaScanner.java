@@ -85,7 +85,7 @@ public class WikipediaScanner {
 			table = new WPTable(rows);
 			int startPos = fScannerPosition;
 			// read parameters until end of line
-			nextNewline();
+			fScannerPosition = nextNewline();
 			table.setParams(fStringSource.substring(startPos, fScannerPosition));
 
 			char ch = ' ';
@@ -113,7 +113,7 @@ public class WikipediaScanner {
 							cells = new ArrayList<WPCell>();
 							row = new WPRow(cells);
 							startPos = fScannerPosition;
-							nextNewline();
+							fScannerPosition = nextNewline();
 							row.setParams(fStringSource.substring(startPos, fScannerPosition));
 							break;
 						case '+': // new row - "\n|+"
@@ -124,7 +124,7 @@ public class WikipediaScanner {
 							cell = new WPCell(fScannerPosition);
 							cell.setType(WPCell.CAPTION);
 							cells.add(cell);
-							nextNewline();
+							fScannerPosition = nextNewline();
 							cell.createTagStack(table, fStringSource, fWikiModel, fScannerPosition);
 							cell = null;
 
@@ -444,15 +444,12 @@ public class WikipediaScanner {
 
 	public int nextNewline() {
 		int idx = fStringSource.indexOf('\n', fScannerPosition);
-		fScannerPosition = idx > 0? idx : fStringSource.length() + 1;
-		return idx;
+		return idx > 0? idx : fStringSource.length() + 1;
 	}
 
 	public int indexEndOfComment() {
 		int idx = fStringSource.indexOf("-->", fScannerPosition);
-		fScannerPosition = idx > 0? idx + 1: fStringSource.length() + 1;
-		
-		return idx > 0? fScannerPosition + 2 : -1;
+		return idx > 0? idx + 3 : -1;
 	}
 
 	public int indexOf(char ch) {
