@@ -1698,19 +1698,15 @@ public class WikipediaScanner {
 	 */
 	protected int indexOfUntilNoLetter(char testChar, int fromIndex) {
 		int index = fromIndex;
-		char ch;
+
 		while (index < fStringSource.length()) {
-			ch = fStringSource.charAt(index++);
+			char ch = fStringSource.charAt(index++);
 			if (ch == testChar) {
 				return index - 1;
 			}
-			if (Character.isLetter(ch)) {
-				if (fStringSource.length() <= index) {
-					return -1;
-				}
-				continue;
-			}
-			return -1;
+			
+			if(!Character.isLetter(ch))
+				break;
 		}
 		
 		return -1;
