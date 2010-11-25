@@ -458,51 +458,59 @@ public class WikipediaScanner {
 		
 		return idx > 0? idx + 9 : -1;
 	}
+	
+	/**
+	 * Return next nonspace position, or -1 if out of bounds
+	 * @param src
+	 * @param pos
+	 * @return
+	 */
+	public int skipSpaces(String src, int pos) {
+		while(pos < src.length() && Character.isWhitespace(src.charAt(pos)))
+			pos++;
+		
+		return pos;
+	}
 
 	public int indexEndOfTable() {
 		// check nowiki and html comments?
 		int count = 1;
-		int oldPosition;
-		char ch;
+		int pos = fScannerPosition;
+
 		try {
 			while (true) {
-				ch = fStringSource.charAt(fScannerPosition++);
+				char ch = fStringSource.charAt(pos++);
 				// find '<!--'
-				if (ch == '<' && fStringSource.charAt(fScannerPosition) == '!' && fStringSource.charAt(fScannerPosition + 1) == '-'
-						&& fStringSource.charAt(fScannerPosition + 2) == '-') {
+				if (matchCurrent(pos - 1, "<!--")) {
 					// start of HTML comment
-					fScannerPosition = indexEndOfComment();
-					if (fScannerPosition == (-1)) {
+					pos = indexEndOfComment();
+					if (pos == (-1)) {
 						return -1;
 					}
-				// find '<nowiki>'	
-				} else if (ch == '<' && fStringSource.charAt(fScannerPosition) == 'n' && fStringSource.charAt(fScannerPosition + 1) == 'o'
-						&& fStringSource.charAt(fScannerPosition + 2) == 'w' && fStringSource.charAt(fScannerPosition + 3) == 'i' && fStringSource.charAt(fScannerPosition + 4) == 'k'
-						&& fStringSource.charAt(fScannerPosition + 5) == 'i' && fStringSource.charAt(fScannerPosition + 6) == '>') {
-					// <nowiki>
-					fScannerPosition = indexEndOfNowiki();
-					if (fScannerPosition == (-1)) {
+				} else if (matchCurrent(pos - 1, "<nowiki>")) {
+					pos = indexEndOfNowiki();
+					if (pos == (-1)) {
 						return -1;
 					}
-				// find '\n{|'
-				} else if (ch == '\n' && fStringSource.charAt(fScannerPosition) == '{' && fStringSource.charAt(fScannerPosition + 1) == '|') {
-					// assume nested table
-					count++;
-				} else if (ch == '\n') {
-					oldPosition = fScannerPosition;
-					ch = fStringSource.charAt(fScannerPosition++);
-					// ignore SPACES and TABs at the beginning of the line
-					while (ch == ' ' || ch == '\t') {
-						ch = fStringSource.charAt(fScannerPosition++);
+				}  else if (ch == '\n') {
+					int oldPosition = pos;
+					pos = skipSpaces(fStringSource, pos);
+					if(pos < 0)
+						return -1;
+
+					if(matchCurrent(pos, "{|")) {
+						count++;
+						continue;
 					}
+
 					// find '|}'
-					if (ch == '|' && fStringSource.charAt(fScannerPosition) == '}') {
+					if (matchCurrent(pos, "|}")) {
 						count--;
 						if (count == 0) {
-							return fScannerPosition + 1;
+							return pos + 2;
 						}
 					}
-					fScannerPosition = oldPosition;
+					pos = oldPosition;
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -1517,6 +1525,10 @@ public class WikipediaScanner {
 	
 	protected boolean matchNext(int pos, char ch) {
 		return Util.matchNext(fStringSource, pos, ch);
+	}
+	
+	protected boolean matchCurrent(int pos, String str) {
+		return fStringSource.regionMatches(pos, str, 0, str.length());
 	}
 
 	// protected final int readUntilIgnoreCase(Object processed, int start, String
