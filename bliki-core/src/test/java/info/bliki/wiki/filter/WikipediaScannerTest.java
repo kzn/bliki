@@ -12,18 +12,6 @@ public class WikipediaScannerTest extends TestCase {
 		return new WikipediaScanner(s);
 	}
 	
-	@Test
-	public void testIndexOf() throws Exception {
-		WikipediaScanner s = makeScanner("aabb");
-		assertEquals(2, s.indexOf('b', 'd'));
-		s.setPosition(0);
-		assertEquals(2, s.indexOf('b'));
-		s.setPosition(0);
-		assertEquals(-1, s.indexOf('d'));
-		
-		s = makeScanner("aadbb");
-		assertEquals(-1, s.indexOf('b', 'd'));
-	}
 	
 	@Test
 	public void testIndexNoWiki() throws Exception {
